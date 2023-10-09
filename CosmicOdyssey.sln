@@ -5,6 +5,10 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmicOdyssey.UI", "CosmicOdyssey.UI\CosmicOdyssey.UI.csproj", "{9F82928F-3559-4F90-A6AB-C1F0FA61D8C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmicOdyssey.Library", "CosmicOdyssey.Library\CosmicOdyssey.Library.csproj", "{F1432835-8A35-4521-B100-6B175061F4B3}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CosmicOdysseyData", "CosmicOdysseyData\CosmicOdysseyData.sqlproj", "{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,16 @@ Global
 		{9F82928F-3559-4F90-A6AB-C1F0FA61D8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F82928F-3559-4F90-A6AB-C1F0FA61D8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F82928F-3559-4F90-A6AB-C1F0FA61D8C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1432835-8A35-4521-B100-6B175061F4B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1432835-8A35-4521-B100-6B175061F4B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1432835-8A35-4521-B100-6B175061F4B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1432835-8A35-4521-B100-6B175061F4B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF0712E-1567-4ECF-BFAA-0874565FEAE9}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
