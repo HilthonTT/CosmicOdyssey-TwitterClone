@@ -68,6 +68,24 @@
     <Build Include="dbo\Tables\Blog.sql" />
     <Build Include="dbo\Tables\Like.sql" />
     <Build Include="dbo\Tables\Comment.sql" />
+    <Build Include="dbo\StoredProcedures\spProfile_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spProfile_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spProfile_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spNotification_GetByProfileId.sql" />
+    <Build Include="dbo\StoredProcedures\spNotification_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spNotification_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spLike_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spLike_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spFollowing_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spComment_GetByBlogId.sql" />
+    <Build Include="dbo\StoredProcedures\spComment_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spComment_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spComment_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spLike_GetByBlogId.sql" />
+    <Build Include="dbo\StoredProcedures\spBlog_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spBlog_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spBlog_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spBlog_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CosmicOdysseyData.refactorlog" />

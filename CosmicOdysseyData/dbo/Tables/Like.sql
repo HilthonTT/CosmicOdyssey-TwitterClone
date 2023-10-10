@@ -2,7 +2,7 @@
 (
 	[BlogId] INT,
     [ProfileId] INT,
-    CONSTRAINT PK_Likes PRIMARY KEY ([BlogId], [ProfileId]),
+    CONSTRAINT [PK_Likes] PRIMARY KEY ([BlogId], [ProfileId]),
     CONSTRAINT [FK_Like_ToBlogId] FOREIGN KEY ([BlogId]) REFERENCES [dbo].[Blog]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Like_ToProfileId] FOREIGN KEY ([ProfileId]) REFERENCES [dbo].[Profile]([Id]) ON DELETE NO ACTION
 )

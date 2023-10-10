@@ -5,7 +5,7 @@
     [BlogId] INT NOT NULL, 
     [Body] TEXT NOT NULL, 
     [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
-    [DateUpdated] DATETIME2 NOT NULL, 
+    [DateUpdated] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     CONSTRAINT [FK_Comment_ToBlog] FOREIGN KEY ([BlogId]) REFERENCES [dbo].[Blog]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Comment_ToProfile] FOREIGN KEY ([ProfileId]) REFERENCES [dbo].[Profile]([Id]) ON DELETE NO ACTION, 
 )
