@@ -8,4 +8,6 @@ BEGIN
 
 	INSERT INTO [dbo].[Comment]([ProfileId], [BlogId], [Body])
 	VALUES (@ProfileId, @BlogId, @Body);
+
+	SELECT SCOPE_IDENTITY() AS [InsertedId];
 END

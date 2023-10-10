@@ -19,4 +19,6 @@ BEGIN
 		@ImageUrl,
 		@Email
 	)
+
+	SELECT SCOPE_IDENTITY() AS [InsertedId];
 END

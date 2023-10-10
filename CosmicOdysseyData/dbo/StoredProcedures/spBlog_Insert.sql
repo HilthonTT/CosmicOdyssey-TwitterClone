@@ -7,4 +7,6 @@ BEGIN
 
 	INSERT INTO [dbo].[Blog] ([ProfileId], [Body])
 	VALUES (@ProfileId, @Body);
+
+	SELECT SCOPE_IDENTITY() AS [InsertedId];
 END
