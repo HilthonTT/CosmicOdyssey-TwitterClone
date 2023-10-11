@@ -6,7 +6,7 @@ using Dapper;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CosmicOdyssey.Library.DataAccess;
-public class NotificationData
+public class NotificationData : INotificationData
 {
     private const string CacheName = nameof(NotificationData);
     private readonly ISqlDataAccess _sql;
