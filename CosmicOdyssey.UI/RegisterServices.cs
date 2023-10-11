@@ -3,6 +3,7 @@ using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
 using CosmicOdyssey.UI.Data;
+using MudBlazor.Services;
 
 namespace CosmicOdyssey.UI;
 
@@ -10,6 +11,7 @@ public static class RegisterServices
 {
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddMudServices();
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddSingleton<WeatherForecastService>();

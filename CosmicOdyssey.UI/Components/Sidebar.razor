@@ -1,0 +1,84 @@
+﻿@inject NavigationManager Navigation
+
+<div class="col-span-1 h-full pr-4 md:pr-6">
+    <div class="flex flex-column items-end">
+        <div class="space-y-2 lg:w-[230px]">
+
+            <div @onclick="LoadHomePage" class="flex flex-row items-center">
+                <div class="relative rounded-full h-14 w-14 flex items-center
+                            justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
+                            cursor-pointer lg:hidden">
+                    <MudIcon Icon="@Icons.Custom.Brands.Twitter" Size="Size.Large" Class="text-white" Title="Twitter"/>
+                </div>
+                <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full
+                                hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer items-center transition">
+                    <MudIcon Icon="@Icons.Custom.Brands.Twitter" Size="Size.Large" Class="text-white" Title="Twitter"/>
+                </div>
+            </div>
+
+            <Virtualize Items="_items" Context="item">
+                <div @key="@item.Href" @onclick="() => NavigateTo(item.Href)" class="flex flex-row items-center">
+                    <div class="relative rounded-full h-14 w-14 flex items-center
+                            justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
+                            cursor-pointer lg:hidden">
+
+                        <MudIcon Icon="@item.Icon" Size="Size.Large" Class="text-white" Title="@item.Label"/>
+                    </div>
+                    <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full 
+                                hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer items-center transition">
+                        <MudIcon Icon="@item.Icon" Size="Size.Large" Class="text-white" Title="@item.Label"/>
+                        <p class="hidden lg:block text-white text-xl">
+                            @item.Label
+                        </p>
+                    </div>
+                </div>
+            </Virtualize>        
+            
+            <div @onclick="LoadHomePage" class="flex flex-row items-center">
+                <div class="relative rounded-full h-14 w-14 flex items-center
+                            justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
+                            cursor-pointer lg:hidden">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout"/>
+                </div>
+                <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full
+                                hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer items-center transition">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout"/>
+                    <p class="hidden lg:block text-white text-xl">
+                        Logout
+                    </p>
+                </div>
+            </div>
+
+            <div @onclick="LoadHomePage">
+                <div class="relative mt-6 lg:hidden rounded-full h-14 w-14 p-4 flex items-center 
+                            justify-center bg-sky-500 hover:bg-opacity-80 transition cursor-pointer">
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="text-white" Title="Tweet"/>
+                </div>
+                <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
+                    <p class="hidden lg:block text-center font-semibold text-white text-[20px]">
+                        Tweet
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void LoadHomePage()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void NavigateTo(string href)
+    {
+        Navigation.NavigateTo(href);
+    }
+
+    private List<SidebarItemModel> _items = new()
+    {
+        new() { Label = "Home", Href = "/", Icon = Icons.Material.Filled.House },
+        new() { Label = "Notifications", Href = "/Notifications", Icon = Icons.Material.Filled.Doorbell },
+        new() { Label = "Profile", Href = "/users/123", Icon = Icons.Material.Filled.Person },
+    };
+}

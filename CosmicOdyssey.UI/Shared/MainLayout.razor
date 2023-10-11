@@ -1,8 +1,21 @@
 ﻿@inherits LayoutComponentBase
 
+<PageTitle>Cosmic Odyssey</PageTitle>
 
 <div>
-    <main>
-        @Body
-    </main>
+    <div class="h-screen bg-black">
+        <div class="container h-full mx-auto xl:px-30 max-w-6xl">
+            <div class="grid grid-cols-4 h-full">
+                <Sidebar />
+                <div class="col-span-3 lg:col-span-2 border-x-[1px] border-neutral-800">
+                    @Body
+                </div>
+                <FollowBar />
+            </div>
+        </div>
+    </div>
 </div>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
