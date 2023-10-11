@@ -5,6 +5,7 @@ public enum Procedure
     GETBYID,
     GETBYBLOGID,
     GETBYPROFILEID,
+    GETBYOID,
     DELETE,
     INSERT,
     UPDATE
