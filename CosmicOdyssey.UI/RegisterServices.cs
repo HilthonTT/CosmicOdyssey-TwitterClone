@@ -2,7 +2,9 @@
 using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
-using CosmicOdyssey.UI.Data;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using MudBlazor.Services;
 
 namespace CosmicOdyssey.UI;
@@ -13,12 +15,17 @@ public static class RegisterServices
     {
         builder.Services.AddMudServices();
         builder.Services.AddRazorPages();
-        builder.Services.AddServerSideBlazor();
-        builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
+        builder.Services.AddMemoryCache();
+        builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
+
+        builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAdB2C"));
+        
 
         builder.Services.AddTransient<ISqlHelper, SqlHelper>();
-        builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 
+        builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
         builder.Services.AddSingleton<IBlogData, BlogData>();
         builder.Services.AddSingleton<ICommentData, CommentData>();
         builder.Services.AddSingleton<ILikeData, LikeData>();

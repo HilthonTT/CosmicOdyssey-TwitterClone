@@ -1,8 +1,8 @@
 using CosmicOdyssey.UI;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.ConfigureServices();
 
 var app = builder.Build();
@@ -20,6 +20,19 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseRewriter(new RewriteOptions().Add(
+    context =>
+    {
+        if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/Signout")
+        {
+            context.HttpContext.Response.Redirect("/");
+        }
+    }
+));
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
