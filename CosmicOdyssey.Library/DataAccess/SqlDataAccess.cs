@@ -50,7 +50,7 @@ public class SqlDataAccess : ISqlDataAccess
         string connectionString = GetConnectionString();
         using var connection = new SqlConnection(connectionString);
 
-        if (string.IsNullOrWhiteSpace(splitOnColumn) && secondaryObjects is null)
+        if (string.IsNullOrWhiteSpace(splitOnColumn) || secondaryObjects?.Length <= 0)
         {
             var rows = await connection.QueryAsync<T>(storedProcedure, parameters,
             commandType: CommandType.StoredProcedure);
