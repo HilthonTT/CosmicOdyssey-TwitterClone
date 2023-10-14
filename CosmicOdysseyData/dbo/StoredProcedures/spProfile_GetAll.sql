@@ -1,5 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spProfile_GetByOid]
-	@ObjectIdentifier NVARCHAR(36)
+﻿CREATE PROCEDURE [dbo].[spProfile_GetAll]
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -15,5 +14,4 @@ BEGIN
 		[DateUpdated], 
 		[HasNotification]
 	FROM [dbo].[Profile]
-	WHERE [ObjectIdentifier] = @ObjectIdentifier;
 END

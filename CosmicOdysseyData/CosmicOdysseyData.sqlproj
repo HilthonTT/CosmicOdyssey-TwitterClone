@@ -88,6 +88,7 @@
     <Build Include="dbo\StoredProcedures\spBlog_Update.sql" />
     <Build Include="dbo\StoredProcedures\spProfile_GetByOid.sql" />
     <Build Include="dbo\StoredProcedures\spComment_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spProfile_GetAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CosmicOdysseyData.refactorlog" />

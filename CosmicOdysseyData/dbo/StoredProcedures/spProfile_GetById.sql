@@ -8,11 +8,13 @@ BEGIN
 		[Id], 
 		[ObjectIdentifier], 
 		[Name], 
+		[Bio],
 		[ImageUrl], 
 		[Email], 
 		[DateCreated], 
 		[DateUpdated], 
-		[HasNotification]
+		[HasNotification],
+		(SELECT COUNT(*) FROM [dbo].[Following] WHERE [FolloweeId] = @Id) AS 'FollowerCount'
 	FROM [dbo].[Profile]
-	WHERE [Id] = @Id;;
+	WHERE [Id] = @Id;
 END
