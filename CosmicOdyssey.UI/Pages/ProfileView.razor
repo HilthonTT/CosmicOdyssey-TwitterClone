@@ -1,0 +1,99 @@
+﻿@page "/Profiles/{Id:int}"
+@inject IProfileData ProfileData
+@inject AuthenticationStateProvider AuthProvider
+
+<Header ShowBackArrow Label="@fetchedProfile?.Name" />
+
+@if (isLoading || fetchedProfile is null)
+{
+    <div class="flex justify-center items-center h-full">
+        <MudProgressCircular Indeterminate Class="text-light-blue" Color="Color.Info" Size="Size.Large"/>
+    </div>
+}
+
+<div class="bg-neutral-700 h-44 relative">
+    @if (string.IsNullOrWhiteSpace(fetchedProfile?.ImageUrl) is false)
+    {
+        <MudImage Src="@fetchedProfile?.ImageUrl" ObjectFit="ObjectFit.Fill" Alt="Cover Image" Style="object-fit: cover;" />
+    }
+    <div class="absolute -bottom-16 left-4">
+        <Avatar Profile="fetchedProfile" IsLarge HasBorder />
+     </div>
+ </div>
+
+ <div class="border-b-[1px] border-neutral-800 pb-4">
+     <div class="flex justify-end p-2">
+        @if ((currentProfile?.Id == fetchedProfile?.Id))
+        {
+            <MudButton Variant="Variant.Outlined" Class="text-white border-white rounded">
+                Edit
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Outlined" Class="text-white border-white rounded">
+                Follow
+            </MudButton>
+        }
+    </div>
+    <div class="mt-8 px-4">
+        <div class="flex flex-col">
+            <p class="text-white text-2xl font-semibold">
+                @fetchedProfile?.Name
+            </p>
+            <p class="text-md text-neutral-500">
+                @@@fetchedProfile?.Email
+            </p>
+        </div>
+        <div class="flex flex-col mt-4">
+            <p class="text-white">
+                @fetchedProfile?.Bio
+            </p>
+            <div class="flex flex-row items-center gap-2 mt-4 text-neutral-500">
+                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth"/>
+                <p>
+                    Joined @fetchedProfile?.DateCreated.ToString("MMMM yyyy")
+                </p>
+            </div>
+        </div>
+        <div class="flex flex-row items-center mt-4 gap-6">
+            <div class="flex flex-row align-items-center gap-1">
+                <p class="text-white">
+                    @fetchedProfile?.FollowingIds?.Count
+                </p>
+                <p class="text-neutral-500">
+                    Following
+                </p>
+            </div>
+            <div class="flex flex-row align-items-center gap-1">
+                <p class="text-white">
+                    @fetchedProfile?.FollowerCount
+                </p>
+                <p class="text-neutral-500">
+                    Followers
+                </p>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ @code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private bool isLoading = true;
+    private ProfileModel currentProfile;
+    private ProfileModel fetchedProfile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFetchedProfileAsync();
+        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
+    }
+
+    private async Task LoadFetchedProfileAsync()
+    {
+        fetchedProfile = await ProfileData.GetProfileAsync(Id);
+        isLoading = false;
+    }
+}

@@ -37,20 +37,40 @@
                 </div>
             </Virtualize>        
             
-            <div @onclick="LoadHomePage" class="flex flex-row items-center">
-                <div class="relative rounded-full h-14 w-14 flex items-center
+            <AuthorizeView>
+                <NotAuthorized>
+                    <div @onclick="LogIn" class="flex flex-row items-center">
+                        <div class="relative rounded-full h-14 w-14 flex items-center
                             justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
                             cursor-pointer lg:hidden">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout"/>
-                </div>
-                <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full
+                            <MudIcon Icon="@Icons.Material.Filled.Login" Size="Size.Large" Class="text-white" Title="Login" />
+                        </div>
+                        <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full
                                 hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer items-center transition">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout"/>
-                    <p class="hidden lg:block text-white text-xl">
-                        Logout
-                    </p>
-                </div>
-            </div>
+                            <MudIcon Icon="@Icons.Material.Filled.Login" Size="Size.Large" Class="text-white" Title="Login" />
+                            <p class="hidden lg:block text-white text-xl">
+                                Login
+                            </p>
+                        </div>
+                    </div>
+                </NotAuthorized>
+                <Authorized>
+                    <div @onclick="LogOut" class="flex flex-row items-center">
+                        <div class="relative rounded-full h-14 w-14 flex items-center
+                            justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
+                            cursor-pointer lg:hidden">
+                            <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout" />
+                        </div>
+                        <div class="relative hidden lg:flex items-center gap-4 p-4 rounded-full
+                                hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer items-center transition">
+                            <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large" Class="text-white" Title="Logout" />
+                            <p class="hidden lg:block text-white text-xl">
+                                Logout
+                            </p>
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
 
             <div @onclick="LoadHomePage">
                 <div class="relative mt-6 lg:hidden rounded-full h-14 w-14 p-4 flex items-center 
@@ -83,6 +103,16 @@
     private void LoadHomePage()
     {
         Navigation.NavigateTo("/");
+    }
+
+    private void LogOut()
+    {
+        Navigation.NavigateTo("/MicrosoftIdentity/Account/SignOut", true);
+    }
+
+    private void LogIn()
+    {
+        Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
 
     private void NavigateTo(string href)

@@ -27,7 +27,7 @@ app.UseAuthorization();
 app.UseRewriter(new RewriteOptions().Add(
     context =>
     {
-        if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/Signedout")
+        if (context.HttpContext.Request.Path == "/MicrosoftIdentity/Account/SignedOut")
         {
             context.HttpContext.Response.Redirect("/");
         }

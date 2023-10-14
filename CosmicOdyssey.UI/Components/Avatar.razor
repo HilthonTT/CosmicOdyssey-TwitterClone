@@ -1,0 +1,58 @@
+﻿@inject IProfileData ProfileData
+@inject NavigationManager Navigation
+
+<div class="hover:opacity-90 transition cursor-pointer relative" 
+    @onclick:stopPropagation="true">
+    <MudAvatar Style="@GetLargeClass()" Class="@GetBorderClass()">
+        <MudImage Alt="Avatar" Src="@GetProfileImage()" @onclick="OnClick" />
+    </MudAvatar>
+</div>
+
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ProfileModel Profile { get; set; }
+
+    [Parameter]
+    public bool IsLarge { get; set; }
+
+    [Parameter]
+    public bool HasBorder { get; set; }
+
+    private void OnClick()
+    {
+        string url = $"/profiles/{Profile.Id}";
+        Navigation.NavigateTo(url);
+    }
+
+    private string GetProfileImage()
+    {
+        if (string.IsNullOrWhiteSpace(Profile?.ImageUrl))
+        {
+            return "astronaut.png";
+        }
+
+        return Profile.ImageUrl;
+    }
+
+    private string GetBorderClass()
+    {
+        if (HasBorder)
+        {
+            return "border-4 border-black";
+        }
+
+        return "";
+    }
+
+    private string GetLargeClass()
+    {
+        if (IsLarge)
+        {
+            return $"height:150px; width:150px";
+        }
+
+        return $"height:50px; width:50px";
+    }
+}
