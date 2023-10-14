@@ -37,7 +37,7 @@ public class ProfileData : IProfileData
         return output;
     }
 
-    public async Task<ProfileModel> GetUserAsync(int id)
+    public async Task<ProfileModel> GetProfileAsync(int id)
     {
         string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.GETBYID);
         var parameters = new DynamicParameters();
@@ -46,7 +46,7 @@ public class ProfileData : IProfileData
         return await _sql.LoadFirstDataAsync<ProfileModel>(storedProcedure, parameters);
     }
 
-    public async Task<ProfileModel> GetUserFromAuthAsync(string oid)
+    public async Task<ProfileModel> GetProfileFromAuthAsync(string oid)
     {
         string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.GETBYOID);
         var parameters = new DynamicParameters();
@@ -75,6 +75,7 @@ public class ProfileData : IProfileData
         parameters.Add("ImageUrl", profile.ImageUrl);
         parameters.Add("Email", profile.Email);
         parameters.Add("HasNotification", profile.HasNotification);
+        parameters.Add("DateUpdated", DateTime.UtcNow);
 
         await _sql.SaveDataAsync(storedProcedure, parameters);
     }
