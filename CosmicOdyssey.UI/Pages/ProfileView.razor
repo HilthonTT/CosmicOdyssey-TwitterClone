@@ -13,21 +13,45 @@
 }
 
 <div class="bg-neutral-700 h-44 relative">
-    @if (string.IsNullOrWhiteSpace(fetchedProfile?.ProfileImage) is false)
+    @if (string.IsNullOrWhiteSpace(fetchedProfile?.CoverImage) is false)
     {
-        <MudImage Src="@fetchedProfile?.ProfileImage" ObjectFit="ObjectFit.Fill" Alt="Cover Image" Style="object-fit: cover;" />
+        <div style="position: relative; width: 100%; height: 100%;">
+            <MudImage Src="@fetchedProfile?.CoverImage" 
+                ObjectFit="ObjectFit.Cover" 
+                Alt="Cover Image" Style="width: 100%; height: 100%;" />
+
+            <div class="absolute top-0 right-0 p-2">
+                <MudFileUpload T="IBrowserFile" FilesChanged="@(((e) => UploadFileAsync(e, "Cover")))" Accept="image/*">
+                    <ButtonTemplate>
+                        <MudButton
+                            Class="text-white" 
+                            Variant="Variant.Filled" 
+                            Color="Color.Dark" 
+                            HtmlTag="label" for="@context">
+                            Add Cover
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+            </div>
+        </div>
     }
     <div class="absolute -bottom-16 left-4">
-        <Avatar Profile="fetchedProfile" IsLarge HasBorder />
-     </div>
- </div>
+        <MudFileUpload T="IBrowserFile" FilesChanged="@(((e) => UploadFileAsync(e, "Profile")))" Accept="image/*">
+            <ButtonTemplate>
+                <label for="@context">
+                    <Avatar Profile="fetchedProfile" IsLarge HasBorder />
+                </label>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </div>
+</div>
 
  <div class="border-b-[1px] border-neutral-800 pb-4">
      <div class="flex justify-end p-2">
         @if ((currentProfile?.Id == fetchedProfile?.Id))
         {
             <MudButton Variant="Variant.Outlined"
-                       Class="text-white border-white rounded"
+                       Class="text-white border-white rounded mr-2"
                        OnClick="EditProfile">
                 Edit
             </MudButton>
@@ -104,4 +128,28 @@
     {
         Navigation.NavigateTo("/MicrosoftIdentity/Account/EditProfile", true);
     }
+
+    private async Task UploadFileAsync(IBrowserFile file, string cover = "Profile")
+    {
+        using var stream = file.OpenReadStream(file.Size);
+        using var memoryStream = new MemoryStream();
+
+        await stream.CopyToAsync(memoryStream);
+        string base64String = Convert.ToBase64String(memoryStream.ToArray());
+
+        switch (cover)
+        {
+            case "Profile":
+                currentProfile.ProfileImage = $"data:image/png;base64,{base64String}";
+                break;
+            default:
+                currentProfile.CoverImage = $"data:image/png;base64,{base64String}";
+                break;
+        }
+
+        await ProfileData.UpdateProfileAsync(currentProfile);
+
+        Navigation.NavigateTo($"/Profiles/{currentProfile?.Id}", true);
+    }
+
 }
