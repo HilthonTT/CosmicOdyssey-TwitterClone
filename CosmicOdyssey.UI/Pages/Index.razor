@@ -1,7 +1,107 @@
 ﻿@page "/"
+@inject IProfileData ProfileData
+@inject IBlogData BlogData
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
 
+<Header Label="Home"/>
 
+<div class="border-b-[1px] border-neutral-800 px-5 py-2">
+    @if (currentProfile is null)
+    {
+        <div class="py-8">
+            <h1 class="text-white text-2xl text-center mb-4 font-bold">
+                Welcome to Cosmic Odyssey
+            </h1>
+            <div class="flex flex-row align-items-center justify-center gap-4">
+                <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
+                    <button @onclick="SignIn" 
+                        class="hidden lg:block text-center text-white text-[18px]">
+                        Log In
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="flex flex-row gap-4">
+            <div>
+                <Avatar Profile="currentProfile" />
+            </div>
+            <div class="w-full">
+                <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
+                    <DataAnnotationsValidator />
+                    <InputTextArea @bind-Value="model.Body"
+                                   disabled="@isLoading"
+                                   class="disabled:opacity-8bg-blue-700 peer
+                                    resize-none mt-3 w-full bg-black ring-0 outline-none
+                                    text-[20px] placeholder-neutral-500 text-white"
+                                   placeholder="What's happening?" />
+                    <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition"/>
+                    <div class="mt-4 flex flex-row justify-end">
+                        <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
+                            <button class="hidden lg:block text-center text-white text-[18px]" 
+                                    disabled="@isLoading" 
+                                    type="submit">
+                                Tweet
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
+    private CreateBlogModel model = new();
+    private ProfileModel currentProfile;
+    private List<BlogModel> blogs;
+    private bool isLoading = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
+        blogs = await BlogData.GetAllBlogsAsync();
+    }
+
+    private void SignIn()
+    {
+        Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        if (currentProfile is null)
+        {
+            SignIn();
+        }
+
+        try
+        {
+            isLoading = true;
+            var b = new BlogModel
+            {
+                Profile = new(currentProfile),
+                Body = model.Body
+            };
+
+            await BlogData.InsertBlogAsync(b);
+
+            model = new();
+            blogs.Insert(0, b);
+
+            Snackbar.Add("Tweeted!", Severity.Info);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }
