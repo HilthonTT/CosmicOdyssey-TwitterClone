@@ -12,8 +12,9 @@ BEGIN
         C.[DateCreated], 
         C.[DateUpdated],
         P.[Id] AS [Id],
-        P.[Name],
-        P.[ImageUrl]
+        P.[DisplayName],
+        P.[ProfileImage],
+        P.[CoverImage]
     FROM [dbo].[Comment] AS C
     INNER JOIN [dbo].[Profile] AS P ON C.[ProfileId] = P.[Id]
     WHERE C.[BlogId] = @BlogId;

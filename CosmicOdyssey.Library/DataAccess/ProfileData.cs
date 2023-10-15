@@ -60,8 +60,11 @@ public class ProfileData : IProfileData
         string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.INSERT);
         var parameters = new DynamicParameters();
         parameters.Add("ObjectIdentifier", profile.ObjectIdentifier);
-        parameters.Add("Name", profile.Name);
+        parameters.Add("FirstName", profile.FirstName);
+        parameters.Add("LastName", profile.LastName);
+        parameters.Add("DisplayName", profile.DisplayName);
         parameters.Add("Email", profile.Email);
+        parameters.Add("Bio", profile.Bio);
 
         return await _sql.SaveDataAsync(storedProcedure, parameters);
     }
@@ -71,9 +74,13 @@ public class ProfileData : IProfileData
         string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.UPDATE);
         var parameters = new DynamicParameters();
         parameters.Add("Id", profile.Id);
-        parameters.Add("Name", profile.Name);
-        parameters.Add("ImageUrl", profile.ImageUrl);
+        parameters.Add("FirstName", profile.FirstName);
+        parameters.Add("LastName", profile.LastName);
+        parameters.Add("DisplayName", profile.DisplayName);
+        parameters.Add("ProfileImage", profile.ProfileImage);
+        parameters.Add("CoverImage", profile.CoverImage);
         parameters.Add("Email", profile.Email);
+        parameters.Add("Bio", profile.Bio);
         parameters.Add("HasNotification", profile.HasNotification);
         parameters.Add("DateUpdated", DateTime.UtcNow);
 

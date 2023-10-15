@@ -1,8 +1,9 @@
 ﻿@page "/Profiles/{Id:int}"
 @inject IProfileData ProfileData
 @inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
 
-<Header ShowBackArrow Label="@fetchedProfile?.Name" />
+<Header ShowBackArrow Label="@fetchedProfile?.DisplayName" />
 
 @if (isLoading || fetchedProfile is null)
 {
@@ -12,9 +13,9 @@
 }
 
 <div class="bg-neutral-700 h-44 relative">
-    @if (string.IsNullOrWhiteSpace(fetchedProfile?.ImageUrl) is false)
+    @if (string.IsNullOrWhiteSpace(fetchedProfile?.ProfileImage) is false)
     {
-        <MudImage Src="@fetchedProfile?.ImageUrl" ObjectFit="ObjectFit.Fill" Alt="Cover Image" Style="object-fit: cover;" />
+        <MudImage Src="@fetchedProfile?.ProfileImage" ObjectFit="ObjectFit.Fill" Alt="Cover Image" Style="object-fit: cover;" />
     }
     <div class="absolute -bottom-16 left-4">
         <Avatar Profile="fetchedProfile" IsLarge HasBorder />
@@ -25,7 +26,9 @@
      <div class="flex justify-end p-2">
         @if ((currentProfile?.Id == fetchedProfile?.Id))
         {
-            <MudButton Variant="Variant.Outlined" Class="text-white border-white rounded">
+            <MudButton Variant="Variant.Outlined"
+                       Class="text-white border-white rounded"
+                       OnClick="EditProfile">
                 Edit
             </MudButton>
         }
@@ -39,10 +42,10 @@
     <div class="mt-8 px-4">
         <div class="flex flex-col">
             <p class="text-white text-2xl font-semibold">
-                @fetchedProfile?.Name
+                @fetchedProfile?.FirstName @fetchedProfile?.LastName
             </p>
             <p class="text-md text-neutral-500">
-                @@@fetchedProfile?.Email
+                @@@fetchedProfile?.DisplayName
             </p>
         </div>
         <div class="flex flex-col mt-4">
@@ -77,7 +80,7 @@
     </div>
  </div>
 
- @code {
+@code {
     [Parameter]
     public int Id { get; set; }
 
@@ -95,5 +98,10 @@
     {
         fetchedProfile = await ProfileData.GetProfileAsync(Id);
         isLoading = false;
+    }
+
+    private void EditProfile()
+    {
+        Navigation.NavigateTo("/MicrosoftIdentity/Account/EditProfile", true);
     }
 }

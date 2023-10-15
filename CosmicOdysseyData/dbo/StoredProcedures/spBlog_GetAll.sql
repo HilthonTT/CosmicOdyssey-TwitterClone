@@ -11,8 +11,9 @@ BEGIN
         B.[DateCreated],
         B.[DateUpdated],
         P.[Id] AS [Id],
-        P.[Name],
-        P.[ImageUrl]
+        P.[DisplayName],
+        P.[ProfileImage],
+        P.[CoverImage]
     FROM [dbo].[Blog] AS B
     INNER JOIN [dbo].[Profile] AS P ON B.[ProfileId] = P.[Id];
 

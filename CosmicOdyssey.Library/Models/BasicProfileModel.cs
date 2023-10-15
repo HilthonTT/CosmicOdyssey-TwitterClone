@@ -2,8 +2,8 @@
 public class BasicProfileModel
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string ImageUrl { get; set; }
+    public string DisplayName { get; set; }
+    public string ProfileImage { get; set; }
 
     public BasicProfileModel()
     {
@@ -13,7 +13,7 @@ public class BasicProfileModel
     public BasicProfileModel(ProfileModel profile)
     {
         Id = profile.Id;
-        Name = profile.Name;
-        ImageUrl = profile.ImageUrl;
+        DisplayName = profile.DisplayName;
+        ProfileImage = profile.ProfileImage;
     }
 }

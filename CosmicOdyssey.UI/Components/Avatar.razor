@@ -28,12 +28,12 @@
 
     private string GetProfileImage()
     {
-        if (string.IsNullOrWhiteSpace(Profile?.ImageUrl))
+        if (string.IsNullOrWhiteSpace(Profile?.ProfileImage))
         {
             return "astronaut.png";
         }
 
-        return Profile.ImageUrl;
+        return Profile.ProfileImage;
     }
 
     private string GetBorderClass()

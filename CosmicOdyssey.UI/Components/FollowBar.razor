@@ -12,10 +12,10 @@
                         <Avatar Profile="profile"/>
                         <div class="flex flex-col">
                             <p class="text-white font-semibold text-sm">
-                                @profile.Name
+                                @profile.FirstName @profile.LastName
                             </p>
                             <p class="text-neutral-400 text-sm">
-                                @@@(profile.Email.Substring(0, 15) + "...")
+                                @@@profile.DisplayName
                             </p>
                         </div>
                     </div>

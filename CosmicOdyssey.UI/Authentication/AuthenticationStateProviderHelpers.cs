@@ -1,6 +1,7 @@
 ﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Text;
 
 namespace CosmicOdyssey.UI.Authentication;
 
@@ -11,7 +12,7 @@ public static class AuthenticationStateProviderHelpers
         IProfileData profileData)
     {
         var authState = await provider.GetAuthenticationStateAsync();
-        string objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value ?? "";
+        string objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
         if (string.IsNullOrWhiteSpace(objectId))
         {
             return null;
@@ -23,8 +24,10 @@ public static class AuthenticationStateProviderHelpers
 
         string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
         string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
+        string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
         string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
-        string fullName = $"{firstName} {lastName}";
+        string bio = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("extension_bio") || 
+            c.Type == "extension_Bio")?.Value;
 
         if (objectId?.Equals(currentProfile.ObjectIdentifier) is false)
         {
@@ -32,10 +35,28 @@ public static class AuthenticationStateProviderHelpers
             currentProfile.ObjectIdentifier = objectId;
         }
 
-        if (fullName?.Equals(currentProfile.Name) is false)
+        if (firstName?.Equals(currentProfile.FirstName) is false)
         {
             isDirty = true;
-            currentProfile.Name = fullName;
+            currentProfile.FirstName = firstName;
+        }
+
+        if (lastName?.Equals(currentProfile.LastName) is false)
+        {
+            isDirty = true;
+            currentProfile.LastName = lastName;
+        }
+
+        if (displayName?.Equals(currentProfile.DisplayName) is false)
+        {
+            isDirty = true;
+            currentProfile.DisplayName = displayName;
+        }
+
+        if (bio?.Equals(currentProfile.Bio) is false)
+        {
+            isDirty = true;
+            currentProfile.Bio = bio;
         }
 
         if (email?.Equals(currentProfile.Email) is false)

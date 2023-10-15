@@ -4,14 +4,17 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT 
-		[Id], 
-		[ObjectIdentifier], 
-		[Name], 
-		[Bio],
-		[ImageUrl], 
-		[Email], 
-		[DateCreated], 
-		[DateUpdated], 
+		[Id],
+		[ObjectIdentifier],
+		[FirstName],
+		[LastName],
+		[DisplayName], 
+		[Bio], 
+		[ProfileImage],
+		[CoverImage], 
+		[Email],
+		[DateCreated],
+		[DateUpdated],
 		[HasNotification]
 	FROM [dbo].[Profile]
 END
