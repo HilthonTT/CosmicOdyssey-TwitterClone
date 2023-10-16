@@ -5,7 +5,6 @@
 <div class="col-span-1 h-full pr-4 md:pr-6">
     <div class="flex flex-column items-end">
         <div class="space-y-2 lg:w-[230px]">
-
             <div @onclick="LoadHomePage" class="flex flex-row items-center">
                 <div class="relative rounded-full h-14 w-14 flex items-center
                             justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 transition
@@ -93,11 +92,6 @@
     protected override async Task OnInitializedAsync()
     {
         currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
-        if (currentProfile is null)
-        {
-            Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
-        }
-
         items = new() 
         {
             new() { Label = "Home", Href = "/", Icon = Icons.Material.Filled.House },
@@ -123,7 +117,7 @@
 
     private void NavigateTo(string href)
     {
-        Navigation.NavigateTo(href, true);
+        Navigation.NavigateTo(href);
     }
 
     private string GetProfileUrl()
