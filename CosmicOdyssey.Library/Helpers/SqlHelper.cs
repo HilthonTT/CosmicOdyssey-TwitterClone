@@ -25,7 +25,7 @@ public class SqlHelper : ISqlHelper
             Procedure.GETALL => "GetAll",
             Procedure.GETBYOID => "GetByOid",
             Procedure.GETBYID => "GetById",
-            Procedure.GETBYBLOGID => "GetBlogId",
+            Procedure.GETBYBLOGID => "GetByBlogId",
             Procedure.GETBYPROFILEID => "GetByProfileId",
             Procedure.DELETE => "Delete",
             Procedure.INSERT => "Insert",

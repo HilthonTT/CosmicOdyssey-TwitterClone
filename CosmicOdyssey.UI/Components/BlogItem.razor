@@ -1,0 +1,82 @@
+﻿@inject NavigationManager Navigation
+@inject IProfileData ProfileData
+@inject ICommentData CommentData
+
+<div @onclick="LoadBlogPage" class="border-b-[1px] border-neutral-800 p-2 cursor-pointer hover:bg-neutral-900 transition">
+    <div class="flex flex-row items-start gap-3">
+        <Avatar Profile="@loadedProfile" />
+        <div>
+            <div class="flex flex-row items-center gap-2">
+                <p @onclick="LoadProfilePage" @onclick:stopPropagation
+                   class="text-white font-semibold cursor-pointer hover:underline">
+                    @loadedProfile?.FirstName @loadedProfile?.LastName
+                </p>
+                <span @onclick="LoadProfilePage" @onclick:stopPropagation
+                      class="text-neutral-500 cursor-pointer hover:underline hidden md:block">
+                    @@@loadedProfile?.DisplayName
+                </span>
+                <span class="text-neutral-500 text-sm">
+                    @Blog?.DateCreated.Humanize()
+                </span>
+            </div>
+            <div class="text-white mt-1">
+                @Blog.Body
+            </div>
+            <div class="flex flex-row items-center mt-3 gap-10">
+                <div @onclick:stopPropagation
+                     class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">
+                    <MudIcon Icon="@Icons.Material.Outlined.Message" Size="Size.Small" />
+                    <p>
+                        @((comments is not null ? comments.Count : "0"))
+                    </p>
+                </div>
+                <div @onclick="OnLikeAsync" @onclick:stopPropagation
+                     class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-rose-500">
+                    <MudIcon Icon="@Icons.Material.Outlined.Favorite" Size="Size.Small" />
+                    <p>
+                        @((comments is not null ? comments.Count : "0"))
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public BlogModel Blog { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public ProfileModel CurrentProfile { get; set; }
+
+    private ProfileModel loadedProfile;
+    private List<CommentModel> comments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loadedProfile = await ProfileData.GetProfileAsync(Blog.Profile.Id);
+        comments = await CommentData.GetBlogCommentsAsync(Blog.Id);
+    }
+
+    private void LoadProfilePage()
+    {
+        Navigation.NavigateTo($"/Profile/{Blog.Profile.Id}");
+    }
+
+    private void LoadBlogPage()
+    {
+        Navigation.NavigateTo($"/Blog/{Blog.Id}");
+    }
+
+    private async Task OnLikeAsync()
+    {
+        if (CurrentProfile is null)
+        {
+            Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
+
+
+    }
+}

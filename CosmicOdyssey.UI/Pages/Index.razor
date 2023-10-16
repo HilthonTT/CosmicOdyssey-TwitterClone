@@ -55,6 +55,13 @@
     }
 </div>
 
+@if (blogs is not null)
+{
+    <Virtualize Items="blogs" OverscanCount="5" Context="blog">
+        <BlogItem Blog="blog" CurrentProfile="currentProfile" />
+    </Virtualize>
+}
+
 @code {
     private CreateBlogModel model = new();
     private ProfileModel currentProfile;
