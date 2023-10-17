@@ -16,7 +16,7 @@
             </h1>
             <div class="flex flex-row align-items-center justify-center gap-4">
                 <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
-                    <button @onclick="SignIn" 
+                    <button @onclick="LogIn" 
                         class="hidden lg:block text-center text-white text-[18px]">
                         Log In
                     </button>
@@ -28,7 +28,7 @@
     {
         <div class="flex flex-row gap-4">
             <div>
-                <Avatar Profile="currentProfile" />
+                <Avatar Profile="@currentProfile" />
             </div>
             <div class="w-full">
                 <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
@@ -74,7 +74,7 @@
         blogs = await BlogData.GetAllBlogsAsync();
     }
 
-    private void SignIn()
+    private void LogIn()
     {
         Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
     }
@@ -83,7 +83,7 @@
     {
         if (currentProfile is null)
         {
-            SignIn();
+            LogIn();
         }
 
         try

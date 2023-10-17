@@ -1,33 +1,35 @@
 ﻿@page "/Profiles/{Id:int}"
 @inject IProfileData ProfileData
+@inject IBlogData BlogData
+@inject IFollowingData FollowingData
+@inject ISnackbar Snackbar
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager Navigation
 
 <Header ShowBackArrow Label="@fetchedProfile?.DisplayName" />
 
-@if (isLoading || fetchedProfile is null)
+ @if (isLoading || fetchedProfile is null)
 {
     <div class="flex justify-center items-center h-full">
-        <MudProgressCircular Indeterminate Class="text-light-blue" Color="Color.Info" Size="Size.Large"/>
-    </div>
+        <MudProgressCircular Indeterminate Class="text-light-blue" Color="Color.Info" Size="Size.Large" />
+     </div>
 }
 
 <div class="bg-neutral-700 h-44 relative">
     @if (string.IsNullOrWhiteSpace(fetchedProfile?.CoverImage) is false)
     {
         <div style="position: relative; width: 100%; height: 100%;">
-            <MudImage Src="@fetchedProfile?.CoverImage" 
-                ObjectFit="ObjectFit.Cover" 
-                Alt="Cover Image" Style="width: 100%; height: 100%;" />
+            <MudImage Src="@fetchedProfile?.CoverImage"
+                      ObjectFit="ObjectFit.Cover"
+                      Alt="Cover Image" Style="width: 100%; height: 100%;" />
 
             <div class="absolute top-0 right-0 p-2">
                 <MudFileUpload T="IBrowserFile" FilesChanged="@(((e) => UploadFileAsync(e, "Cover")))" Accept="image/*">
                     <ButtonTemplate>
-                        <MudButton
-                            Class="text-white" 
-                            Variant="Variant.Filled" 
-                            Color="Color.Dark" 
-                            HtmlTag="label" for="@context">
+                        <MudButton Class="text-white"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Dark"
+                                   HtmlTag="label" for="@context">
                             Add Cover
                         </MudButton>
                     </ButtonTemplate>
@@ -40,15 +42,15 @@
             <ButtonTemplate>
                 <label for="@context">
                     <Avatar Profile="fetchedProfile" IsLarge HasBorder />
-                </label>
-            </ButtonTemplate>
-        </MudFileUpload>
-    </div>
-</div>
+                 </label>
+             </ButtonTemplate>
+         </MudFileUpload>
+     </div>
+ </div>
 
  <div class="border-b-[1px] border-neutral-800 pb-4">
      <div class="flex justify-end p-2">
-        @if ((currentProfile?.Id == fetchedProfile?.Id))
+         @if ((currentProfile?.Id == fetchedProfile?.Id))
         {
             <MudButton Variant="Variant.Outlined"
                        Class="text-white border-white rounded mr-2"
@@ -58,8 +60,9 @@
         }
         else
         {
-            <MudButton Variant="Variant.Outlined" Class="text-white border-white rounded">
-                Follow
+            <MudButton OnClick="FollowAsync" Disabled="@((isBusy || isLoading))"
+                Variant="Variant.Outlined" Class="text-white border-white rounded">
+                @((isFollowing ? "Following" : "Follow"))
             </MudButton>
         }
     </div>
@@ -77,7 +80,7 @@
                 @fetchedProfile?.Bio
             </p>
             <div class="flex flex-row items-center gap-2 mt-4 text-neutral-500">
-                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth"/>
+                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" />
                 <p>
                     Joined @fetchedProfile?.DateCreated.ToString("MMMM yyyy")
                 </p>
@@ -102,25 +105,45 @@
             </div>
         </div>
     </div>
- </div>
+</div>
+
+@if (blogs is not null)
+{
+    <Virtualize Items="blogs" OverscanCount="5" Context="blog">
+        <BlogItem Blog="blog" CurrentProfile="currentProfile" />
+    </Virtualize>
+}
+
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private bool isLoading = true;
+    private bool isFollowing = false;
+    private bool isBusy = false;
+    private List<BlogModel> blogs;
+    private List<FollowingModel> followers;
     private ProfileModel currentProfile;
     private ProfileModel fetchedProfile;
 
+
     protected override async Task OnInitializedAsync()
     {
-        await LoadFetchedProfileAsync();
         currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
+        await LoadFetchedProfileAsync();
     }
 
     private async Task LoadFetchedProfileAsync()
     {
         fetchedProfile = await ProfileData.GetProfileAsync(Id);
+        if (fetchedProfile is not null)
+        {
+            blogs = await BlogData.GetProfileBlogsAsync(fetchedProfile.Id);
+            followers = await FollowingData.GetFollowersAsync(fetchedProfile.Id);
+        }
+
+        isFollowing = followers?.FirstOrDefault(x => x.FollowerId == currentProfile.Id) is not null;
         isLoading = false;
     }
 
@@ -140,10 +163,10 @@
         switch (cover)
         {
             case "Profile":
-                currentProfile.ProfileImage = $"data:image/png;base64,{base64String}";
+                fetchedProfile.ProfileImage = $"data:image/png;base64,{base64String}";
                 break;
             default:
-                currentProfile.CoverImage = $"data:image/png;base64,{base64String}";
+                fetchedProfile.CoverImage = $"data:image/png;base64,{base64String}";
                 break;
         }
 
@@ -152,4 +175,43 @@
         Navigation.NavigateTo($"/Profiles/{currentProfile?.Id}", true);
     }
 
+    private async Task FollowAsync()
+    {
+        if (currentProfile is null)
+        {
+            Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+            return;
+        }
+
+        if (fetchedProfile is null)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+            return;
+        }
+
+        try
+        {
+            isBusy = true;
+
+            isFollowing = await FollowingData.ToggleFollowAsync(currentProfile.Id, fetchedProfile.Id);
+            if (isFollowing)
+            {
+                Snackbar.Add($"Following {fetchedProfile?.DisplayName}", Severity.Info);
+                fetchedProfile.FollowerCount += 1;
+            }
+            else
+            {
+                Snackbar.Add($"Unfollowed {fetchedProfile?.DisplayName}", Severity.Info);
+                fetchedProfile.FollowerCount -= 1;
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
 }

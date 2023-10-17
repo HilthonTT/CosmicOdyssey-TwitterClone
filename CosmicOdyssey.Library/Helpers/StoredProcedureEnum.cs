@@ -8,5 +8,6 @@ public enum Procedure
     GETBYOID,
     DELETE,
     INSERT,
-    UPDATE
+    UPDATE,
+    FOLLOWEEID,
 }

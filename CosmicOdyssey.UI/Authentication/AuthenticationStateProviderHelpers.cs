@@ -22,12 +22,12 @@ public static class AuthenticationStateProviderHelpers
 
         bool isDirty = false;
 
-        string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
-        string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
-        string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
-        string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+        string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value ?? "";
+        string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value ?? "";
+        string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value ?? "";
+        string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value ?? "";
         string bio = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("extension_bio") || 
-            c.Type == "extension_Bio")?.Value;
+            c.Type == "extension_Bio")?.Value ?? "";
 
         if (objectId?.Equals(currentProfile.ObjectIdentifier) is false)
         {

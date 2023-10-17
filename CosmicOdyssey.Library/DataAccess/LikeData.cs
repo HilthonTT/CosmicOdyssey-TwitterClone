@@ -52,7 +52,7 @@ public class LikeData : ILikeData
         return await _sql.LoadDataAsync<LikeModel>(storedProcedure, parameters);
     }
 
-    public async Task ToggleLikeAsync(int profileId, int blogId)
+    public async Task<bool> ToggleLikeAsync(int profileId, int blogId)
     {
         try
         {
@@ -93,12 +93,15 @@ public class LikeData : ILikeData
             await SaveBlogInTransactionAsync(blog);
 
             _sql.CommitTransaction();
+
+            return userLike is null;
         }
         catch (Exception ex)
         {
             _sql.RollbackTransaction();
-            _logger.LogError("Internal Error: {error}", ex.Message);
+            _logger.LogError("Internal Error [LIKE_TOGGLE]: {error}", ex.Message);
             Console.WriteLine($"Internal Error: {ex.Message}");
+            throw;
         }
     }
 }

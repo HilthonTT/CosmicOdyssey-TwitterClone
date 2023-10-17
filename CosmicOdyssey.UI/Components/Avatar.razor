@@ -4,7 +4,7 @@
 <div class="hover:opacity-90 transition cursor-pointer relative" 
     @onclick:stopPropagation="true">
     <MudAvatar Style="@GetLargeClass()" Class="@GetBorderClass()">
-        <MudImage Alt="Avatar" Src="@GetProfileImage()" @onclick="OnClick" />
+         <MudImage Alt="Avatar" Src="@GetProfileImage()" @onclick="OnClick" />
     </MudAvatar>
 </div>
 
@@ -22,7 +22,7 @@
 
     private void OnClick()
     {
-        string url = $"/profiles/{Profile.Id}";
+        string url = $"/profiles/{Profile?.Id}";
         Navigation.NavigateTo(url);
     }
 
@@ -33,7 +33,7 @@
             return "astronaut.png";
         }
 
-        return Profile.ProfileImage;
+        return Profile?.ProfileImage;
     }
 
     private string GetBorderClass()

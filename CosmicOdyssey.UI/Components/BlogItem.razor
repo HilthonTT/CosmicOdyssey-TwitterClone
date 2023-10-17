@@ -34,7 +34,7 @@
                      class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-rose-500">
                     <MudIcon Icon="@Icons.Material.Outlined.Favorite" Size="Size.Small" />
                     <p>
-                        @((comments is not null ? comments.Count : "0"))
+                        @Blog.LikeCount
                     </p>
                 </div>
             </div>

@@ -13,6 +13,7 @@ public class SqlHelper : ISqlHelper
             { typeof(NotificationModel), "Notification" },
             { typeof(ProfileModel), "Profile" },
             { typeof(LikeModel), "Like" },
+            { typeof(FollowingModel), "Following" },
         };
 
         if (tableNames.TryGetValue(typeof(T), out string tableName) is false )
@@ -30,6 +31,7 @@ public class SqlHelper : ISqlHelper
             Procedure.DELETE => "Delete",
             Procedure.INSERT => "Insert",
             Procedure.UPDATE => "Update",
+            Procedure.FOLLOWEEID => "GetByFolloweeId",
             _ => "",
         };
 

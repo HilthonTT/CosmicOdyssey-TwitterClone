@@ -38,6 +38,25 @@ public class BlogData : IBlogData
         return output;
     }
 
+    public async Task<List<BlogModel>> GetProfileBlogsAsync(int profileId)
+    {
+        string key = $"{CacheName}_{profileId}";
+        var output = _cache.Get<List<BlogModel>>(key);
+        if (output is null)
+        {
+            string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETBYPROFILEID);
+            var parameters = new DynamicParameters();
+            parameters.Add("ProfileId", profileId);
+
+            output = await _sql.LoadDataAsync<BlogModel>(storedProcedure, parameters, "Id",
+                new BasicProfileModel());
+
+            _cache.Set(key, output, TimeSpan.FromHours(1));
+        }
+
+        return output;
+    }
+
     public async Task<BlogModel> LoadBlogAsync(int id)
     {
         string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETALL);

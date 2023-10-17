@@ -38,5 +38,6 @@ public static class RegisterServices
         builder.Services.AddSingleton<ILikeData, LikeData>();
         builder.Services.AddSingleton<INotificationData, NotificationData>();
         builder.Services.AddSingleton<IProfileData, ProfileData>();
+        builder.Services.AddSingleton<IFollowingData, FollowingData>();
     }
 }
