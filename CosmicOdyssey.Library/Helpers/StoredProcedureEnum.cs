@@ -10,4 +10,5 @@ public enum Procedure
     INSERT,
     UPDATE,
     FOLLOWEEID,
+    FOLLOWERID,
 }

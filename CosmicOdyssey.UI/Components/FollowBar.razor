@@ -9,7 +9,7 @@
             <div class="flex flex-col gap-6">
                 <Virtualize Items="profiles" Context="profile" OverscanCount="5">
                     <div class="flex flex-row gap-4">
-                        <Avatar Profile="profile"/>
+                        <Avatar Profile="profile" ForceLoad/>
                         <div class="flex flex-col">
                             <p class="text-white font-semibold text-sm">
                                 @profile.FirstName @profile.LastName

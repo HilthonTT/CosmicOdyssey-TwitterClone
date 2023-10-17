@@ -89,7 +89,7 @@
         <div class="flex flex-row items-center mt-4 gap-6">
             <div class="flex flex-row align-items-center gap-1">
                 <p class="text-white">
-                    @fetchedProfile?.FollowingIds?.Count
+                    @currentlyFollowing?.Count
                 </p>
                 <p class="text-neutral-500">
                     Following
@@ -124,6 +124,7 @@
     private bool isBusy = false;
     private List<BlogModel> blogs;
     private List<FollowingModel> followers;
+    private List<FollowingModel> currentlyFollowing;
     private ProfileModel currentProfile;
     private ProfileModel fetchedProfile;
 
@@ -141,6 +142,7 @@
         {
             blogs = await BlogData.GetProfileBlogsAsync(fetchedProfile.Id);
             followers = await FollowingData.GetFollowersAsync(fetchedProfile.Id);
+            currentlyFollowing = await FollowingData.GetCurrentlyFollowingAsync(fetchedProfile.Id);
         }
 
         isFollowing = followers?.FirstOrDefault(x => x.FollowerId == currentProfile.Id) is not null;

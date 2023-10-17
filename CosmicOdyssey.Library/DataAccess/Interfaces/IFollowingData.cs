@@ -3,6 +3,7 @@
 namespace CosmicOdyssey.Library.DataAccess.Interfaces;
 public interface IFollowingData
 {
+    Task<List<FollowingModel>> GetCurrentlyFollowingAsync(int followerId);
     Task<List<FollowingModel>> GetFollowersAsync(int followeeId);
     Task<bool> ToggleFollowAsync(int currentProfileId, int profileId);
 }

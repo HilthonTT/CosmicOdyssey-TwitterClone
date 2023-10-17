@@ -9,15 +9,18 @@ namespace CosmicOdyssey.Library.DataAccess;
 public class FollowingData : IFollowingData
 {
     private readonly ISqlDataAccess _sql;
+    private readonly IProfileData _profileData;
     private readonly ISqlHelper _sqlHelper;
     private readonly ILogger<FollowingData> _logger;
 
     public FollowingData(
         ISqlDataAccess sql,
+        IProfileData profileData,
         ISqlHelper sqlHelper,
         ILogger<FollowingData> logger)
     {
         _sql = sql;
+        _profileData = profileData;
         _sqlHelper = sqlHelper;
         _logger = logger;
     }
@@ -27,6 +30,15 @@ public class FollowingData : IFollowingData
         string storedProcedure = _sqlHelper.GetStoredProcedure<FollowingModel>(Procedure.FOLLOWEEID);
         var parameters = new DynamicParameters();
         parameters.Add("FolloweeId", followeeId);
+
+        return await _sql.LoadDataAsync<FollowingModel>(storedProcedure, parameters);
+    }
+
+    public async Task<List<FollowingModel>> GetCurrentlyFollowingAsync(int followerId)
+    {
+        string storedProcedure = _sqlHelper.GetStoredProcedure<FollowingModel>(Procedure.FOLLOWERID);
+        var parameters = new DynamicParameters();
+        parameters.Add("FollowerId", followerId);
 
         return await _sql.LoadDataAsync<FollowingModel>(storedProcedure, parameters);
     }
@@ -43,6 +55,8 @@ public class FollowingData : IFollowingData
             var followers = await GetFollowersAsync(profileId);
             var userFollow = followers.FirstOrDefault(x => x.FollowerId == currentProfileId);
 
+            var followeeProfile = await _profileData.GetProfileAsync(profileId);
+
             string storedProcedure;
             var parameters = new DynamicParameters();
             parameters.Add("FollowerId", currentProfileId);
@@ -51,8 +65,6 @@ public class FollowingData : IFollowingData
             if (userFollow is null)
             {
                 storedProcedure = _sqlHelper.GetStoredProcedure<FollowingModel>(Procedure.INSERT);
-                
-
                 var newFollow = new FollowingModel
                 {
                     FollowerId = currentProfileId,
@@ -68,7 +80,10 @@ public class FollowingData : IFollowingData
                 followers.Remove(userFollow);
             }
 
+            followeeProfile.FollowerCount = followers.Count;
+
             await _sql.SaveDataAsync(storedProcedure, parameters);
+            await _profileData.UpdateProfileAsync(followeeProfile);
 
             return userFollow is null;
         }

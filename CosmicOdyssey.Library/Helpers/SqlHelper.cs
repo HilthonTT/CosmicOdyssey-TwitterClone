@@ -32,6 +32,7 @@ public class SqlHelper : ISqlHelper
             Procedure.INSERT => "Insert",
             Procedure.UPDATE => "Update",
             Procedure.FOLLOWEEID => "GetByFolloweeId",
+            Procedure.FOLLOWERID => "GetByFollowerId",
             _ => "",
         };
 
