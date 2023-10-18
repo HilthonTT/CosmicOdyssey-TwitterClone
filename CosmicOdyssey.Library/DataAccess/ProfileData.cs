@@ -1,9 +1,9 @@
-﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
+﻿using CosmicOdyssey.Library.Cache.Interfaces;
+using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CosmicOdyssey.Library.DataAccess;
 public class ProfileData : IProfileData
@@ -11,12 +11,12 @@ public class ProfileData : IProfileData
     private const string CacheName = nameof(ProfileData);
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
-    private readonly IMemoryCache _cache;
+    private readonly IRedisCache _cache;
 
     public ProfileData(
         ISqlDataAccess sql,
         ISqlHelper sqlHelper,
-        IMemoryCache cache)
+        IRedisCache cache)
     {
         _sql = sql;
         _sqlHelper = sqlHelper;
@@ -25,13 +25,13 @@ public class ProfileData : IProfileData
 
     public async Task<List<ProfileModel>> GetAllProfilesAsync()
     {
-        var output = _cache.Get<List<ProfileModel>>(CacheName);
+        var output = await _cache.GetRecordAsync<List<ProfileModel>>(CacheName);
         if (output is null)
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.GETALL);
             output = await _sql.LoadDataAsync<ProfileModel>(storedProcedure);
 
-            _cache.Set(CacheName, output, TimeSpan.FromHours(1));
+            await _cache.SetRecordAsync(CacheName, output, TimeSpan.FromHours(1));
         }
 
         return output;

@@ -1,9 +1,9 @@
-﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
+﻿using CosmicOdyssey.Library.Cache.Interfaces;
+using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CosmicOdyssey.Library.DataAccess;
 public class NotificationData : INotificationData
@@ -11,12 +11,12 @@ public class NotificationData : INotificationData
     private const string CacheName = nameof(NotificationData);
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
-    private readonly IMemoryCache _cache;
+    private readonly IRedisCache _cache;
 
     public NotificationData(
         ISqlDataAccess sql,
         ISqlHelper sqlHelper,
-        IMemoryCache cache)
+        IRedisCache cache)
     {
         _sql = sql;
         _sqlHelper = sqlHelper;
@@ -26,7 +26,7 @@ public class NotificationData : INotificationData
     public async Task<List<NotificationModel>> GetProfileNotificationAsync(int profileId)
     {
         string key = $"{CacheName}_{profileId}";
-        var output = _cache.Get<List<NotificationModel>>(key);
+        var output = await _cache.GetRecordAsync<List<NotificationModel>>(key);
         if (output is null)
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<NotificationModel>(Procedure.GETBYPROFILEID);
@@ -34,7 +34,7 @@ public class NotificationData : INotificationData
             parameters.Add("ProfileId", profileId);
 
             output = await _sql.LoadDataAsync<NotificationModel>(storedProcedure, parameters);
-            _cache.Set(key, output, TimeSpan.FromMinutes(5));
+            await _cache.SetRecordAsync(key, output, TimeSpan.FromMinutes(5));
         }
 
         return output;

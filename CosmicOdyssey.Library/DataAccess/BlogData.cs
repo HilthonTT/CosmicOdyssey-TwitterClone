@@ -1,9 +1,9 @@
-﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
+﻿using CosmicOdyssey.Library.Cache.Interfaces;
+using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CosmicOdyssey.Library.DataAccess;
 public class BlogData : IBlogData
@@ -11,12 +11,12 @@ public class BlogData : IBlogData
     private const string CacheName = nameof(BlogData);
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
-    private readonly IMemoryCache _cache;
+    private readonly IRedisCache _cache;
 
     public BlogData(
         ISqlDataAccess sql,
         ISqlHelper sqlHelper,
-        IMemoryCache cache)
+        IRedisCache cache)
     {
         _sql = sql;
         _sqlHelper = sqlHelper;
@@ -25,14 +25,14 @@ public class BlogData : IBlogData
 
     public async Task<List<BlogModel>> GetAllBlogsAsync()
     {
-        var output = _cache.Get<List<BlogModel>>(CacheName);
+        var output = await _cache.GetRecordAsync<List<BlogModel>>(CacheName);
         if (output is null)
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETALL);
             output = await _sql.LoadDataAsync<BlogModel>(storedProcedure, splitOnColumn: "Id",
                 secondaryObjects: new BasicProfileModel());
 
-            _cache.Set(CacheName, output, TimeSpan.FromHours(1));
+            await _cache.SetRecordAsync(CacheName, output, TimeSpan.FromHours(1));
         }
 
         return output;
@@ -41,7 +41,7 @@ public class BlogData : IBlogData
     public async Task<List<BlogModel>> GetProfileBlogsAsync(int profileId)
     {
         string key = $"{CacheName}_{profileId}";
-        var output = _cache.Get<List<BlogModel>>(key);
+        var output = await _cache.GetRecordAsync<List<BlogModel>>(key);
         if (output is null)
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETBYPROFILEID);
@@ -51,7 +51,7 @@ public class BlogData : IBlogData
             output = await _sql.LoadDataAsync<BlogModel>(storedProcedure, parameters, "Id",
                 new BasicProfileModel());
 
-            _cache.Set(key, output, TimeSpan.FromHours(1));
+            await _cache.SetRecordAsync(key, output, TimeSpan.FromHours(1));
         }
 
         return output;

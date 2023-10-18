@@ -1,4 +1,6 @@
-﻿using CosmicOdyssey.Library.DataAccess;
+﻿using CosmicOdyssey.Library.Cache;
+using CosmicOdyssey.Library.Cache.Interfaces;
+using CosmicOdyssey.Library.DataAccess;
 using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
@@ -17,6 +19,7 @@ public static class RegisterServices
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor().AddMicrosoftIdentityConsentHandler();
         builder.Services.AddMemoryCache();
+        builder.Services.AddDistributedMemoryCache();
         builder.Services.AddControllersWithViews().AddMicrosoftIdentityUI();
 
         builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
@@ -30,7 +33,15 @@ public static class RegisterServices
             });
         });
 
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = builder.Configuration.GetConnectionString("Redis");
+            options.InstanceName = "CosmicOdyssey_";
+        });
+
         builder.Services.AddTransient<ISqlHelper, SqlHelper>();
+
+        builder.Services.AddSingleton<IRedisCache, RedisCache>();
 
         builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
         builder.Services.AddSingleton<IBlogData, BlogData>();

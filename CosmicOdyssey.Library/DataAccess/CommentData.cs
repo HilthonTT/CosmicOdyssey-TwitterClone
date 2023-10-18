@@ -1,9 +1,9 @@
-﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
+﻿using CosmicOdyssey.Library.Cache.Interfaces;
+using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Helpers;
 using CosmicOdyssey.Library.Helpers.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CosmicOdyssey.Library.DataAccess;
 public class CommentData : ICommentData
@@ -11,12 +11,12 @@ public class CommentData : ICommentData
     private const string CacheName = nameof(CommentData);
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
-    private readonly IMemoryCache _cache;
+    private readonly IRedisCache _cache;
 
     public CommentData(
         ISqlDataAccess sql,
         ISqlHelper sqlHelper,
-        IMemoryCache cache)
+        IRedisCache cache)
     {
         _sql = sql;
         _sqlHelper = sqlHelper;
@@ -26,7 +26,7 @@ public class CommentData : ICommentData
     public async Task<List<CommentModel>> GetBlogCommentsAsync(int blogId)
     {
         string key = $"{CacheName}_{blogId}";
-        var output = _cache.Get<List<CommentModel>>(key);
+        var output = await _cache.GetRecordAsync<List<CommentModel>>(key);
         if (output is null)
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<CommentModel>(Procedure.GETBYBLOGID);
@@ -35,7 +35,8 @@ public class CommentData : ICommentData
 
             output = await _sql.LoadDataAsync<CommentModel>(storedProcedure, parameters,
                 "Id", new BasicProfileModel());
-            _cache.Set(key, output, TimeSpan.FromHours(1));
+            
+            await _cache.SetRecordAsync(key, output, TimeSpan.FromHours(1));
         }
 
         return output;

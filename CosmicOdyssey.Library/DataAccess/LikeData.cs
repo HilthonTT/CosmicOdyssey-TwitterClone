@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 namespace CosmicOdyssey.Library.DataAccess;
 public class LikeData : ILikeData
 {
-    private const string CacheName = nameof(LikeData);
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
     private readonly ILogger<LikeData> _logger;
