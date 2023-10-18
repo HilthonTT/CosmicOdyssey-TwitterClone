@@ -112,7 +112,7 @@
 @if (blogs is not null)
 {
     <Virtualize Items="blogs" OverscanCount="5" Context="blog">
-        <BlogItem Blog="blog" CurrentProfile="currentProfile" />
+        <BlogItem @key="@blog.Id" Blog="@blog" CurrentProfile="@currentProfile" />
     </Virtualize>
 }
 

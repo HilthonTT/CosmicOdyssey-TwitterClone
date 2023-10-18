@@ -1,5 +1,6 @@
 ﻿@page "/Blog/{Id:int}"
 @inject IBlogData BlogData
+@inject ICommentData CommentData
 @inject IProfileData ProfileData
 @inject ISnackbar Snackbar
 @inject AuthenticationStateProvider AuthProvider
@@ -15,42 +16,51 @@ else
 {
     <Header Label="Tweet" ShowBackArrow/>
     <BlogItem Blog="fetchedBlog" CurrentProfile="currentProfile"/>
-    <div class="flex flex-row gap-4">
-        <div>
-            <Avatar Profile="@currentProfile" />
-        </div>
-        <div class="w-full">
-            <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
-                <DataAnnotationsValidator />
-                <InputTextArea @bind-Value="model.Body"
-                               disabled="@isCreating"
-                               class="disabled:opacity-8bg-blue-700 peer
+    <div class="border-b-[1px] border-neutral-800 px-5 py-2">
+        <div class="flex flex-row gap-4">
+            <div>
+                <Avatar Profile="@currentProfile" />
+            </div>
+            <div class="w-full">
+                <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
+                    <DataAnnotationsValidator />
+                    <InputTextArea @bind-Value="model.Body"
+                                   disabled="@isCreating"
+                                   class="disabled:opacity-8bg-blue-700 peer
                                     resize-none mt-3 w-full bg-black ring-0 outline-none
                                     text-[20px] placeholder-neutral-500 text-white"
-                               placeholder="Tweet your reply" />
-                <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
-                <div class="mt-4 flex flex-row justify-end">
-                    <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
-                        <button class="hidden lg:block text-center text-white text-[18px]"
-                                disabled="@isCreating"
-                                type="submit">
-                            Tweet
-                        </button>
+                                   placeholder="Tweet your reply" />
+                    <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
+                    <div class="mt-4 flex flex-row justify-end">
+                        <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
+                            <button class="hidden lg:block text-center text-white text-[18px]"
+                                    disabled="@isCreating"
+                                    type="submit">
+                                Tweet
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </EditForm>
+                </EditForm>
+            </div>
         </div>
     </div>
+    @if (comments is not null)
+    {
+        <Virtualize Items="comments" Context="c" OverscanCount="5">
+            <CommentItem @key="c.Id" Comment="c" />
+        </Virtualize>
+    }
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    private CreateBlogModel model = new();
-    
+    private CreateCommentModel model = new();
+
     private BlogModel fetchedBlog;
     private ProfileModel currentProfile;
+    private List<CommentModel> comments;
     private bool isLoading = true;
     private bool isCreating = false;
 
@@ -58,6 +68,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         fetchedBlog = await BlogData.GetBlogAsync(Id);
+        comments = await CommentData.GetBlogCommentsAsync(Id);
         currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
 
         isLoading = false;
@@ -69,19 +80,21 @@ else
         {
             Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
         }
-        
+
         try
         {
             isCreating = true;
-            var b = new BlogModel
+            var c = new CommentModel
                 {
+                    BlogId = Id,
                     Profile = new(currentProfile),
                     Body = model.Body
                 };
 
-            await BlogData.InsertBlogAsync(b);
+            await CommentData.CreateCommentAsync(c);
 
             model = new();
+            comments.Insert(0, c);
 
             Snackbar.Add("Replied!", Severity.Info);
         }

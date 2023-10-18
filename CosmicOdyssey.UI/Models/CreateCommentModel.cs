@@ -2,7 +2,7 @@
 
 namespace CosmicOdyssey.UI.Models;
 
-public class CreateBlogModel
+public class CreateCommentModel
 {
     [Required]
     [StringLength(1000)]
