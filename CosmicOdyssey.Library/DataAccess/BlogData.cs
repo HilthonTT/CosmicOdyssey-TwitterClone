@@ -57,9 +57,9 @@ public class BlogData : IBlogData
         return output;
     }
 
-    public async Task<BlogModel> LoadBlogAsync(int id)
+    public async Task<BlogModel> GetBlogAsync(int id)
     {
-        string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETALL);
+        string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETBYID);
         var parameters = new DynamicParameters();
         parameters.Add("Id", id);
 

@@ -93,6 +93,7 @@
     <Build Include="dbo\StoredProcedures\spFollowing_GetByFolloweeId.sql" />
     <Build Include="dbo\StoredProcedures\spFollowing_Delete.sql" />
     <Build Include="dbo\StoredProcedures\spFollowing_GetByFollowerId.sql" />
+    <Build Include="dbo\StoredProcedures\spBlog_GetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CosmicOdysseyData.refactorlog" />

@@ -1,0 +1,97 @@
+﻿@page "/Blog/{Id:int}"
+@inject IBlogData BlogData
+@inject IProfileData ProfileData
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+
+@if (isLoading || fetchedBlog is null)
+{
+    <div class="flex justify-center items-center h-full">
+        <MudProgressCircular Indeterminate Color="Color.Info" Size="Size.Large" />
+    </div>
+}
+else
+{
+    <Header Label="Tweet" ShowBackArrow/>
+    <BlogItem Blog="fetchedBlog" CurrentProfile="currentProfile"/>
+    <div class="flex flex-row gap-4">
+        <div>
+            <Avatar Profile="@currentProfile" />
+        </div>
+        <div class="w-full">
+            <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
+                <DataAnnotationsValidator />
+                <InputTextArea @bind-Value="model.Body"
+                               disabled="@isCreating"
+                               class="disabled:opacity-8bg-blue-700 peer
+                                    resize-none mt-3 w-full bg-black ring-0 outline-none
+                                    text-[20px] placeholder-neutral-500 text-white"
+                               placeholder="Tweet your reply" />
+                <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
+                <div class="mt-4 flex flex-row justify-end">
+                    <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
+                        <button class="hidden lg:block text-center text-white text-[18px]"
+                                disabled="@isCreating"
+                                type="submit">
+                            Tweet
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CreateBlogModel model = new();
+    
+    private BlogModel fetchedBlog;
+    private ProfileModel currentProfile;
+    private bool isLoading = true;
+    private bool isCreating = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        fetchedBlog = await BlogData.GetBlogAsync(Id);
+        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
+
+        isLoading = false;
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        if (currentProfile is null)
+        {
+            Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
+        
+        try
+        {
+            isCreating = true;
+            var b = new BlogModel
+                {
+                    Profile = new(currentProfile),
+                    Body = model.Body
+                };
+
+            await BlogData.InsertBlogAsync(b);
+
+            model = new();
+
+            Snackbar.Add("Replied!", Severity.Info);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+        }
+        finally
+        {
+            isCreating = false;
+        }
+    }
+}

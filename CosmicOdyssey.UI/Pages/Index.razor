@@ -34,7 +34,7 @@
                 <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
                     <DataAnnotationsValidator />
                     <InputTextArea @bind-Value="model.Body"
-                                   disabled="@isLoading"
+                                   disabled="@isCreating"
                                    class="disabled:opacity-8bg-blue-700 peer
                                     resize-none mt-3 w-full bg-black ring-0 outline-none
                                     text-[20px] placeholder-neutral-500 text-white"
@@ -42,8 +42,8 @@
                     <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition"/>
                     <div class="mt-4 flex flex-row justify-end">
                         <div class="rmt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer transition">
-                            <button class="hidden lg:block text-center text-white text-[18px]" 
-                                    disabled="@isLoading" 
+                            <button class="hidden lg:block text-center text-white text-[18px]"
+                                    disabled="@isCreating"
                                     type="submit">
                                 Tweet
                             </button>
@@ -67,6 +67,7 @@
     private ProfileModel currentProfile;
     private List<BlogModel> blogs;
     private bool isLoading = false;
+    private bool isCreating = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,7 +89,7 @@
 
         try
         {
-            isLoading = true;
+            isCreating = true;
             var b = new BlogModel
             {
                 Profile = new(currentProfile),
@@ -108,7 +109,7 @@
         }
         finally
         {
-            isLoading = false;
+            isCreating = false;
         }
     }
 }

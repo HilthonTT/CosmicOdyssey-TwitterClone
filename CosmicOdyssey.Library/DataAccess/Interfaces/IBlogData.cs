@@ -7,6 +7,6 @@ public interface IBlogData
     Task<List<BlogModel>> GetAllBlogsAsync();
     Task<List<BlogModel>> GetProfileBlogsAsync(int profileId);
     Task<int?> InsertBlogAsync(BlogModel blog);
-    Task<BlogModel> LoadBlogAsync(int id);
+    Task<BlogModel> GetBlogAsync(int id);
     Task UpdateBlogAsync(BlogModel blog);
 }

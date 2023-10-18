@@ -1,6 +1,7 @@
-﻿@inject NavigationManager Navigation
-@inject IProfileData ProfileData
+﻿@inject IProfileData ProfileData
 @inject ICommentData CommentData
+@inject ILikeData LikeData
+@inject NavigationManager Navigation
 
 <div @onclick="LoadBlogPage" class="border-b-[1px] border-neutral-800 p-2 cursor-pointer hover:bg-neutral-900 transition">
     <div class="flex flex-row items-start gap-3">
@@ -25,14 +26,17 @@
             <div class="flex flex-row items-center mt-3 gap-10">
                 <div @onclick:stopPropagation
                      class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">
-                    <MudIcon Icon="@Icons.Material.Outlined.Message" Size="Size.Small" />
+                    <MudIcon Icon="@Icons.Material.Outlined.Message" Size="Size.Small" Title="Comments"/>
                     <p>
                         @((comments is not null ? comments.Count : "0"))
                     </p>
                 </div>
                 <div @onclick="OnLikeAsync" @onclick:stopPropagation
                      class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-rose-500">
-                    <MudIcon Icon="@Icons.Material.Outlined.Favorite" Size="Size.Small" />
+                    <MudIcon Icon="@Icons.Material.Outlined.Favorite"
+                             Size="Size.Small"
+                             Color="@((isLiked) ? Color.Error : Color.Surface)"
+                             Title="Like"/>
                     <p>
                         @Blog.LikeCount
                     </p>
@@ -53,11 +57,17 @@
 
     private ProfileModel loadedProfile;
     private List<CommentModel> comments;
+    private List<LikeModel> likes;
+    private bool isLiked = false;
+
 
     protected override async Task OnInitializedAsync()
     {
         loadedProfile = await ProfileData.GetProfileAsync(Blog.Profile.Id);
         comments = await CommentData.GetBlogCommentsAsync(Blog.Id);
+        likes = await LikeData.GetBlogLikesAsync(Blog.Id);
+
+        isLiked = likes.FirstOrDefault(x => x.ProfileId == CurrentProfile.Id) is not null;
     }
 
     private void LoadProfilePage()
@@ -77,6 +87,14 @@
             Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
         }
 
-
+        isLiked = await LikeData.ToggleLikeAsync(CurrentProfile.Id, Blog.Id);
+        if (isLiked)
+        {
+            Blog.LikeCount += 1;
+        }
+        else
+        {
+            Blog.LikeCount -= 1;
+        }
     }
 }

@@ -1,0 +1,25 @@
+﻿@inject NavigationManager Navigation
+
+<div class="flex items-center justify-center h-full">
+    <div class="flex items-center justify-center text-center">
+        <MudIcon @onclick="LoadHomePage"
+                 Icon="@Icons.Material.Filled.ArrowBack"
+                 Class="text-sky-500 mx-2 cursor-pointer" Size="Size.Large" />
+        <div class="flex items-center justify-center text-white">
+            <p class="font-semibold text-[30px]">
+                401
+            </p>
+            <div class="border-l border-white border-1 h-[35px] mx-3" />
+            <p class="text-white">
+                You are not allowed to view this page.
+            </p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void LoadHomePage()
+    {
+        Navigation.NavigateTo("/");
+    }
+}
