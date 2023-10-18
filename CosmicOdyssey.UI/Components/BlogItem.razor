@@ -38,7 +38,7 @@
                              Color="@((isLiked) ? Color.Error : Color.Surface)"
                              Title="Like"/>
                     <p>
-                        @Blog.LikeCount
+                        @likeCount
                     </p>
                 </div>
             </div>
@@ -59,6 +59,7 @@
     private List<CommentModel> comments;
     private List<LikeModel> likes;
     private bool isLiked = false;
+    private int likeCount = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -67,6 +68,7 @@
         comments = await CommentData.GetBlogCommentsAsync(Blog.Id);
         likes = await LikeData.GetBlogLikesAsync(Blog.Id);
 
+        likeCount = likes.Count;
         isLiked = likes.FirstOrDefault(x => x.ProfileId == CurrentProfile.Id) is not null;
     }
 
@@ -90,11 +92,11 @@
         isLiked = await LikeData.ToggleLikeAsync(CurrentProfile.Id, Blog.Id);
         if (isLiked)
         {
-            Blog.LikeCount += 1;
+            likeCount += 1;
         }
         else
         {
-            Blog.LikeCount -= 1;
+            likeCount -= 1;
         }
     }
 }
