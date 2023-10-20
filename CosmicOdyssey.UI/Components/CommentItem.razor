@@ -6,10 +6,12 @@
         <Avatar Profile="@Comment?.Profile" />
         <div>
             <div class="flex flex-row items-center gap-2">
-                <p class="text-white font-semibold cursor-pointer hover:underline">
+                <p @onclick="LoadProfilePage" @onclick:stopPropagation
+                   class="text-white font-semibold cursor-pointer hover:underline">
                     @Comment?.Profile?.FirstName @Comment?.Profile?.LastName
                 </p>
-                <span class="text-neutral-500 cursor-pointer hover:underline hidden md:block">
+                <span @onclick="LoadProfilePage" @onclick:stopPropagation
+                      class="text-neutral-500 cursor-pointer hover:underline hidden md:block">
                     @@@Comment?.Profile?.DisplayName
                 </span>
                 <span class="text-neutral-500 text-sm">
@@ -23,13 +25,4 @@
     </div>
 </div>
 
-@code {
-    [Parameter]
-    [EditorRequired]
-    public CommentModel Comment { get; set; }
 
-    private void LoadProfilePage()
-    {
-        Navigation.NavigateTo($"/Profiles/{Comment?.Profile?.Id}");
-    }
-}

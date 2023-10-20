@@ -25,11 +25,4 @@
     </div>
 }
 
-@code {
-    private List<ProfileModel> profiles;
 
-    protected override async Task OnInitializedAsync()
-    {
-        profiles = await ProfileData.GetAllProfilesAsync();
-    }
-}
