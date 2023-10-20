@@ -1,7 +1,6 @@
 ﻿using CosmicOdyssey.Library.DataAccess.Interfaces;
 using CosmicOdyssey.Library.Models;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Text;
 
 namespace CosmicOdyssey.UI.Authentication;
 
@@ -9,7 +8,8 @@ public static class AuthenticationStateProviderHelpers
 {
     public static async Task<ProfileModel> GetUserFromAuthAsync(
         this AuthenticationStateProvider provider,
-        IProfileData profileData)
+        IProfileData profileData,
+        bool checkIfCreated = true)
     {
         var authState = await provider.GetAuthenticationStateAsync();
         string objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
@@ -19,6 +19,10 @@ public static class AuthenticationStateProviderHelpers
         }
 
         var currentProfile = await profileData.GetProfileFromAuthAsync(objectId) ?? new();
+        if (checkIfCreated is false)
+        {
+            return currentProfile;
+        }
 
         bool isDirty = false;
 

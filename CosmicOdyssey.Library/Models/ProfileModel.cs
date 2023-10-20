@@ -14,5 +14,4 @@ public class ProfileModel
     public DateTime DateUpdated { get; set; } = DateTime.UtcNow;
     public int FollowerCount { get; set; }
     public int FollowingCount { get; set; }
-    public bool HasNotification { get; set; }
 }

@@ -41,7 +41,7 @@ public class CommentData : ICommentData
             parameters.Add("BlogId", blogId);
 
             output = await _sql.LoadDataAsync<CommentModel>(storedProcedure, parameters,
-                "Id", new BasicProfileModel());
+                "Id", new ProfileModel());
             
             await _cache.SetRecordAsync(key, output, TimeSpan.FromHours(1));
         }
@@ -56,7 +56,7 @@ public class CommentData : ICommentData
         parameters.Add("Id", id);
 
         return await _sql.LoadFirstDataAsync<CommentModel>(storedProcedure, parameters,
-            "Id", new BasicProfileModel());
+            "Id", new ProfileModel());
     }
 
     public async Task CreateCommentAsync(CommentModel comment)
@@ -67,7 +67,7 @@ public class CommentData : ICommentData
 
             string storedProcedure = _sqlHelper.GetStoredProcedure<CommentModel>(Procedure.INSERT);
             var parameters = new DynamicParameters();
-            parameters.Add("ProfileId", comment.Profile.Id);
+            parameters.Add("ProfileId", comment.Profile?.Id);
             parameters.Add("BlogId", comment.BlogId);
             parameters.Add("Body", comment.Body);
 
@@ -89,6 +89,9 @@ public class CommentData : ICommentData
                 _logger.LogError("Internal Error [COMMENT_CREATE]: {error}", ex.Message);
                 throw;
             }
+
+            string key = $"{CacheName}_{comment.BlogId}";
+            await _cache.RemoveRecordAsync(key);
 
             _sql.CommitTransaction();
         }

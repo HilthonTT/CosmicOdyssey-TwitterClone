@@ -57,16 +57,23 @@ public class ProfileData : IProfileData
 
     public async Task<int?> CreateProfileAsync(ProfileModel profile)
     {
-        string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.INSERT);
-        var parameters = new DynamicParameters();
-        parameters.Add("ObjectIdentifier", profile.ObjectIdentifier);
-        parameters.Add("FirstName", profile.FirstName);
-        parameters.Add("LastName", profile.LastName);
-        parameters.Add("DisplayName", profile.DisplayName);
-        parameters.Add("Email", profile.Email);
-        parameters.Add("Bio", profile.Bio);
+        try
+        {
+            string storedProcedure = _sqlHelper.GetStoredProcedure<ProfileModel>(Procedure.INSERT);
+            var parameters = new DynamicParameters();
+            parameters.Add("ObjectIdentifier", profile.ObjectIdentifier);
+            parameters.Add("FirstName", profile.FirstName);
+            parameters.Add("LastName", profile.LastName);
+            parameters.Add("DisplayName", profile.DisplayName);
+            parameters.Add("Email", profile.Email);
+            parameters.Add("Bio", profile.Bio);
 
-        return await _sql.SaveDataAsync(storedProcedure, parameters);
+            return await _sql.SaveDataAsync(storedProcedure, parameters);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task UpdateProfileAsync(ProfileModel profile)
@@ -81,7 +88,6 @@ public class ProfileData : IProfileData
         parameters.Add("CoverImage", profile.CoverImage);
         parameters.Add("Email", profile.Email);
         parameters.Add("Bio", profile.Bio);
-        parameters.Add("HasNotification", profile.HasNotification);
         parameters.Add("DateUpdated", DateTime.UtcNow);
 
         await _sql.SaveDataAsync(storedProcedure, parameters);

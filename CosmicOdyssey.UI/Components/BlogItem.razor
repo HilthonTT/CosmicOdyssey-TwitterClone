@@ -5,16 +5,16 @@
 
 <div @onclick="LoadBlogPage" class="border-b-[1px] border-neutral-800 p-2 cursor-pointer hover:bg-neutral-900 transition">
     <div class="flex flex-row items-start gap-3">
-        <Avatar Profile="@loadedProfile" />
+        <Avatar Profile="@Blog.Profile" />
         <div>
             <div class="flex flex-row items-center gap-2">
                 <p @onclick="LoadProfilePage" @onclick:stopPropagation
                    class="text-white font-semibold cursor-pointer hover:underline">
-                    @loadedProfile?.FirstName @loadedProfile?.LastName
+                    @Blog.Profile?.FirstName @Blog.Profile?.LastName
                 </p>
                 <span @onclick="LoadProfilePage" @onclick:stopPropagation
                       class="text-neutral-500 cursor-pointer hover:underline hidden md:block">
-                    @@@loadedProfile?.DisplayName
+                    @@@Blog.Profile?.DisplayName
                 </span>
                 <span class="text-neutral-500 text-sm">
                     @Blog?.DateCreated.Humanize()
@@ -55,16 +55,13 @@
     [EditorRequired]
     public ProfileModel CurrentProfile { get; set; }
 
-    private ProfileModel loadedProfile;
     private List<CommentModel> comments;
     private List<LikeModel> likes;
     private bool isLiked = false;
     private int likeCount = 0;
 
-
     protected override async Task OnInitializedAsync()
     {
-        loadedProfile = await ProfileData.GetProfileAsync(Blog.Profile.Id);
         comments = await CommentData.GetBlogCommentsAsync(Blog.Id);
         likes = await LikeData.GetBlogLikesAsync(Blog.Id);
 

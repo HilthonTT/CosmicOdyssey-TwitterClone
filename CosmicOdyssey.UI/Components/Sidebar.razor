@@ -105,7 +105,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
+        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData, false);
         items = new()
         {
             new() { Label = "Home", Href = "/", Icon = Icons.Material.Filled.House },

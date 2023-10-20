@@ -30,7 +30,7 @@ public class BlogData : IBlogData
         {
             string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETALL);
             output = await _sql.LoadDataAsync<BlogModel>(storedProcedure, splitOnColumn: "Id",
-                secondaryObjects: new BasicProfileModel());
+                secondaryObjects: new ProfileModel());
 
             await _cache.SetRecordAsync(CacheName, output, TimeSpan.FromHours(1));
         }
@@ -49,7 +49,7 @@ public class BlogData : IBlogData
             parameters.Add("ProfileId", profileId);
 
             output = await _sql.LoadDataAsync<BlogModel>(storedProcedure, parameters, "Id",
-                new BasicProfileModel());
+                new ProfileModel());
 
             await _cache.SetRecordAsync(key, output, TimeSpan.FromHours(1));
         }
@@ -65,7 +65,7 @@ public class BlogData : IBlogData
 
         var blog = await _sql.LoadFirstDataAsync<BlogModel>(storedProcedure, parameters,
             splitOnColumn: "Id",
-            secondaryObjects: new BasicProfileModel());
+            secondaryObjects: new ProfileModel());
 
         return blog;
     }
@@ -76,6 +76,8 @@ public class BlogData : IBlogData
         var parameters = new DynamicParameters();
         parameters.Add("ProfileId", blog.Profile.Id);
         parameters.Add("Body", blog.Body);
+
+        await _cache.RemoveRecordAsync(CacheName);
 
         return await _sql.SaveDataAsync(storedProcedure, parameters);
     }

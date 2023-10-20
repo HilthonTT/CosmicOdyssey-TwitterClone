@@ -14,7 +14,6 @@ BEGIN
 		[CoverImage], 
 		[Email],
 		[DateCreated],
-		[DateUpdated],
-		[HasNotification]
+		[DateUpdated]
 	FROM [dbo].[Profile]
 END

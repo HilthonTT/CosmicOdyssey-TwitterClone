@@ -15,8 +15,7 @@ BEGIN
 		[CoverImage], 
 		[Email],
 		[DateCreated],
-		[DateUpdated],
-		[HasNotification]
+		[DateUpdated]
 	FROM [dbo].[Profile]
 	WHERE [ObjectIdentifier] = @ObjectIdentifier;
 END

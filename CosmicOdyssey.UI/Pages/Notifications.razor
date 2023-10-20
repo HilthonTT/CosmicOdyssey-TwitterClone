@@ -26,14 +26,4 @@ else
     </div>
 }
 
-@code {
-    private ProfileModel currentProfile;
-    private List<NotificationModel> notifications;
 
-    protected override async Task OnInitializedAsync()
-    {
-        currentProfile = await AuthProvider.GetUserFromAuthAsync(ProfileData);
-
-        notifications = await NotificationData.GetProfileNotificationAsync(currentProfile.Id);
-    }
-}

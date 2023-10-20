@@ -7,7 +7,6 @@
 	@ProfileImage TEXT,
 	@CoverImage TEXT,
 	@Email NVARCHAR(256),
-	@HasNotification BIT,
 	@DateUpdated DATETIME2
 AS
 BEGIN
@@ -21,7 +20,6 @@ BEGIN
 		[ProfileImage] = @ProfileImage,
 		[CoverImage] = @CoverImage,
 		[Email] = @Email,
-		[HasNotification] = @HasNotification,
 		[DateUpdated] = @DateUpdated
 	WHERE [Id] = @Id;
 END
