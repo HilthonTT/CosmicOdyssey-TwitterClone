@@ -6,7 +6,7 @@ This is a Twitter clone project developed using Blazor Server and styled with Ta
 - **Authentication**: Azure B2C
 - **Caching**: Redis
 - **Database**: SQL
-- **Styling Credits**: The project's styles are a copy of [CodeWithAntonio](https://www.youtube.com/codewithantonio) on YouTube.
+- **Styling Credits**: The project's styles are a copy of [CodeWithAntonio](https://www.youtube.com/@codewithantonio) on YouTube.
 
 ## Features
 
