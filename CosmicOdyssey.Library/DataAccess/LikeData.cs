@@ -10,25 +10,22 @@ public class LikeData : ILikeData
 {
     private readonly ISqlDataAccess _sql;
     private readonly ISqlHelper _sqlHelper;
+    private readonly INotificationData _notificationData;
+    private readonly IBlogData _blogData;
     private readonly ILogger<LikeData> _logger;
 
     public LikeData(
         ISqlDataAccess sql,
         ISqlHelper sqlHelper,
+        INotificationData NotificationData,
+        IBlogData blogData,
         ILogger<LikeData> logger)
     {
         _sql = sql;
         _sqlHelper = sqlHelper;
+        _notificationData = NotificationData;
+        _blogData = blogData;
         _logger = logger;
-    }
-
-    private async Task<BlogModel> GetBlogInTransactionAsync(int blogId)
-    {
-        string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.GETBYID);
-        var parameters = new DynamicParameters();
-        parameters.Add("Id", blogId);
-
-        return await _sql.LoadFirstDataInTransactionAsync<BlogModel>(storedProcedure, parameters);
     }
 
     private async Task SaveBlogInTransactionAsync(BlogModel blog)
@@ -57,7 +54,7 @@ public class LikeData : ILikeData
         {
             _sql.StartTransaction();
 
-            var blog = await GetBlogInTransactionAsync(blogId);
+            var blog = await _blogData.GetBlogAsync(blogId);
             var likes = await GetBlogLikesAsync(blogId);
             var userLike = likes.FirstOrDefault(x => x.ProfileId == profileId);
 
@@ -77,6 +74,23 @@ public class LikeData : ILikeData
                 };
 
                 likes.Add(userLike);
+
+                try
+                {
+                    var newNotification = new NotificationModel()
+                    {
+                        Body = "Someone liked your tweet!",
+                        ProfileId = blog.Profile.Id,
+                    };
+
+                    await _notificationData.CreateNotificationAsync(newNotification);
+                }
+                catch (Exception ex)
+                {
+                    _sql.RollbackTransaction();
+                    _logger.LogError("Internal Error [LIKE_TOGGLE]: {error}", ex.Message);
+                    throw;
+                }
             }
             else
             {
@@ -99,7 +113,6 @@ public class LikeData : ILikeData
         {
             _sql.RollbackTransaction();
             _logger.LogError("Internal Error [LIKE_TOGGLE]: {error}", ex.Message);
-            Console.WriteLine($"Internal Error: {ex.Message}");
             throw;
         }
     }

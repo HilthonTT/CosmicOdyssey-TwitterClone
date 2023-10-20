@@ -69,7 +69,7 @@
         likes = await LikeData.GetBlogLikesAsync(Blog.Id);
 
         likeCount = likes.Count;
-        isLiked = likes.FirstOrDefault(x => x.ProfileId == CurrentProfile.Id) is not null;
+        isLiked = likes.FirstOrDefault(x => x.ProfileId == CurrentProfile?.Id) is not null;
     }
 
     private void LoadProfilePage()

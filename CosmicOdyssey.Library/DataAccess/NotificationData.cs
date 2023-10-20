@@ -49,12 +49,20 @@ public class NotificationData : INotificationData
         return await _sql.LoadFirstDataAsync<NotificationModel>(storedProcedure, parameters);
     }
 
-    public async Task<int?> CreateNotificationAsync(NotificationModel notification)
+    public async Task<int?> CreateNotificationAsync(NotificationModel notification, bool isTransaction = false)
     {
+        string key = $"{CacheName}_{notification.ProfileId}";
+        await _cache.RemoveRecordAsync(key);
+
         string storedProcedure = _sqlHelper.GetStoredProcedure<NotificationModel>(Procedure.INSERT);
         var parameters = new DynamicParameters();
         parameters.Add("ProfileId", notification.ProfileId);
         parameters.Add("Body", notification.Body);
+
+        if (isTransaction)
+        {
+            return await _sql.SaveDataInTransactionAsync(storedProcedure, parameters);
+        }
 
         return await _sql.SaveDataAsync(storedProcedure, parameters);
     }

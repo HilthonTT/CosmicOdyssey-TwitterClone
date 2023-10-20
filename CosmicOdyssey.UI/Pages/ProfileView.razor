@@ -23,18 +23,21 @@
                       ObjectFit="ObjectFit.Cover"
                       Alt="Cover Image" Style="width: 100%; height: 100%;" />
 
-            <div class="absolute top-0 right-0 p-2">
-                <MudFileUpload T="IBrowserFile" FilesChanged="@(((e) => UploadFileAsync(e, "Cover")))" Accept="image/*">
-                    <ButtonTemplate>
-                        <MudButton Class="text-white"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Dark"
-                                   HtmlTag="label" for="@context">
-                            Add Cover
-                        </MudButton>
-                    </ButtonTemplate>
-                </MudFileUpload>
-            </div>
+           @if (fetchedProfile?.Id == currentProfile?.Id)
+            {
+                <div class="absolute top-0 right-0 p-2">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="@(((e) => UploadFileAsync(e, "Cover")))" Accept="image/*">
+                        <ButtonTemplate>
+                            <MudButton Class="text-white"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Dark"
+                                       HtmlTag="label" for="@context">
+                                Add Cover
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                </div>
+            }
         </div>
     }
     <div class="absolute -bottom-16 left-4">
@@ -50,7 +53,7 @@
 
  <div class="border-b-[1px] border-neutral-800 pb-4">
      <div class="flex justify-end p-2">
-         @if ((currentProfile?.Id == fetchedProfile?.Id))
+        @if (currentProfile?.Id == fetchedProfile?.Id)
         {
             <MudButton Variant="Variant.Outlined"
                        Class="text-white border-white rounded mr-2"

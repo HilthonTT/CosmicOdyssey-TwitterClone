@@ -10,17 +10,20 @@ public class FollowingData : IFollowingData
 {
     private readonly ISqlDataAccess _sql;
     private readonly IProfileData _profileData;
+    private readonly INotificationData _notificationData;
     private readonly ISqlHelper _sqlHelper;
     private readonly ILogger<FollowingData> _logger;
 
     public FollowingData(
         ISqlDataAccess sql,
         IProfileData profileData,
+        INotificationData notificationData,
         ISqlHelper sqlHelper,
         ILogger<FollowingData> logger)
     {
         _sql = sql;
         _profileData = profileData;
+        _notificationData = notificationData;
         _sqlHelper = sqlHelper;
         _logger = logger;
     }
@@ -72,6 +75,23 @@ public class FollowingData : IFollowingData
                 };
 
                 followers.Add(newFollow);
+
+                try
+                {
+                    var newNotification = new NotificationModel()
+                    {
+                        Body = "Someone followed you!",
+                        ProfileId = profileId,
+                    };
+
+                    await _notificationData.CreateNotificationAsync(newNotification);
+                }
+                catch (Exception ex)
+                {
+                    _sql.RollbackTransaction();
+                    _logger.LogError("Internal Error [LIKE_TOGGLE]: {error}", ex.Message);
+                    throw;
+                }
             }
             else
             {

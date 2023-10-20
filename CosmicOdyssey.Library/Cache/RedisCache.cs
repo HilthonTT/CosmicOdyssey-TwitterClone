@@ -79,4 +79,17 @@ public class RedisCache : IRedisCache
             return JsonSerializer.Deserialize<T>(jsonData);
         }
     }
+
+    public async Task RemoveRecordAsync(string recordId)
+    {
+        try
+        {
+            _cache.Remove(recordId);
+            await _redis.RemoveAsync(recordId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Redis cache failed: {message}", ex.Message);
+        }
+    }
 }
