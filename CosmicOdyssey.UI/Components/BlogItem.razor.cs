@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using CosmicOdyssey.Library.Models;
+using MudBlazor;
+using CosmicOdyssey.UI.Dialogs;
 
 namespace CosmicOdyssey.UI.Components;
 
@@ -13,6 +15,9 @@ public partial class BlogItem
     [EditorRequired]
     public ProfileModel CurrentProfile { get; set; }
 
+    [Parameter]
+    public bool ShowEdit { get; set; } = false;
+
     private List<CommentModel> comments;
     private List<LikeModel> likes;
     private bool isLiked = false;
@@ -25,6 +30,16 @@ public partial class BlogItem
 
         likeCount = likes.Count;
         isLiked = likes.FirstOrDefault(x => x.ProfileId == CurrentProfile?.Id) is not null;
+    }
+
+    private async Task OpenEditDialogAsync()
+    {
+        var parameters = new DialogParameters<EditDialog>
+        {
+            { x => x.Blog, Blog }
+        };
+
+        await DialogService.ShowAsync<EditDialog>($"Edit your blog?", parameters);
     }
 
     private void LoadProfilePage()
