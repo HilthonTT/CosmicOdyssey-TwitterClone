@@ -16,7 +16,7 @@ public partial class BlogItem
     public ProfileModel CurrentProfile { get; set; }
 
     [Parameter]
-    public bool ShowEdit { get; set; } = false;
+    public bool ShowButtons { get; set; } = false;
 
     private List<CommentModel> comments;
     private List<LikeModel> likes;
@@ -34,12 +34,22 @@ public partial class BlogItem
 
     private async Task OpenEditDialogAsync()
     {
-        var parameters = new DialogParameters<EditDialog>
+        var parameters = new DialogParameters<EditBlogDialog>
         {
             { x => x.Blog, Blog }
         };
 
-        await DialogService.ShowAsync<EditDialog>($"Edit your blog?", parameters);
+        await DialogService.ShowAsync<EditBlogDialog>($"Edit your blog?", parameters);
+    }
+
+    private async Task OpenDeleteDialogAsync()
+    {
+        var parameters = new DialogParameters<DeleteBlogDialog>
+        {
+            { x => x.Blog, Blog }
+        };
+
+        await DialogService.ShowAsync<DeleteBlogDialog>($"Delete your blog?", parameters);
     }
 
     private void LoadProfilePage()

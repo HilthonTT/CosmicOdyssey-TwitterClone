@@ -3,7 +3,7 @@
 namespace CosmicOdyssey.Library.DataAccess.Interfaces;
 public interface IBlogData
 {
-    Task DeleteBlogAsync(int id);
+    Task DeleteBlogAsync(BlogModel blog);
     Task<List<BlogModel>> GetAllBlogsAsync();
     Task<List<BlogModel>> GetProfileBlogsAsync(int profileId);
     Task<int?> InsertBlogAsync(BlogModel blog);

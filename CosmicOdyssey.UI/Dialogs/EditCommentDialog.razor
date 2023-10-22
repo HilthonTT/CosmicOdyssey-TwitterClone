@@ -1,0 +1,107 @@
+﻿@inject ICommentData CommentData
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<MudDialog Class="bg-black text-white w-[500px]">
+    <TitleContent>
+        <div class="flex justify-between">
+            <span class="text-[20px]">
+                Edit
+                '
+                <span class="text-rose-500 overflow-hidden">@Comment?.Body</span>
+                '
+                ?
+            </span>
+            <button @onclick="Cancel" class="btn btn-close btn-close-white" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <div class="w-full">
+            <EditForm Model="model" OnValidSubmit="OnSubmitAsync">
+                <DataAnnotationsValidator />
+                <InputTextArea @bind-Value="model.Body" class="w-full
+                    p-3
+                    text-lg
+                    bg-black
+                    border-2
+                    border-neutral-800
+                    rounded-md
+                    outline-none
+                    text-white
+                    focus:border-sky-500
+                    focus:border-2
+                    transition
+                    disabled:bg-neutral-900
+                    disabled:opacity-70
+                    disabled:cursor-not-allowed"
+                    placeholder="What's happening?" />
+                <hr class="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
+                <div class="mt-4 flex flex-row justify-center">
+                    <div class="rmt-6 px-4 py-2 rounded-full bg-sky-500
+                                hover:bg-opacity-90 cursor-pointer transition">
+                        <button class="text-center text-white text-[18px]"
+                                disabled="@isEditing"
+                                type="submit">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public CommentModel Comment { get; set; }
+
+    private CreateCommentModel model = new();
+    private bool isEditing = false;
+
+    protected override void OnInitialized()
+    {
+        model.Body = Comment.Body;
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        if (isEditing)
+        {
+            return;
+        }
+
+        try
+        {
+            isEditing = true;
+
+            Comment.Body = model.Body;
+
+            await CommentData.UpdateCommentAsync(Comment);
+
+            Submit();
+            Navigation.NavigateTo($"/Blog/{Comment.BlogId}", true);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+            Cancel();
+        }
+        finally
+        {
+            isEditing = false;
+        }
+    }
+
+    private void Submit()
+    {
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+}

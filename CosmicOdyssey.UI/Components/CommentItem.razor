@@ -1,10 +1,11 @@
 ﻿@inject NavigationManager Navigation
 @inject IProfileData ProfileData
+@inject IDialogService DialogService
 
 <div class="border-b-[1px] border-neutral-800 p-2 cursor-pointer hover:bg-neutral-900 transition">
     <div class="flex flex-row items-start gap-3">
         <Avatar Profile="@Comment?.Profile" />
-        <div>
+        <div class="w-full">
             <div class="flex flex-row items-center gap-2">
                 <p @onclick="LoadProfilePage" @onclick:stopPropagation
                    class="text-white font-semibold cursor-pointer hover:underline">
@@ -17,6 +18,12 @@
                 <span class="text-neutral-500 text-sm">
                     @Comment?.DateCreated.Humanize()
                 </span>
+                <button @onclick="OpenEditDialogAsync" @onclick:stopPropagation class="ml-auto">
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="text-sky-500 hover:text-sky-600" />
+                </button>
+                <button @onclick="OpenDeleteDialogAsync" @onclick:stopPropagation>
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" Class="text-rose-500 hover:text-rose-800" />
+                </button>
             </div>
             <div class="text-white mt-1">
                 @Comment.Body

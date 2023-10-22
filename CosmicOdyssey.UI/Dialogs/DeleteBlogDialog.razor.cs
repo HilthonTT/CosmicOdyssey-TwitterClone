@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using CosmicOdyssey.UI.Models;
 using CosmicOdyssey.Library.Models;
+
 namespace CosmicOdyssey.UI.Dialogs;
 
-public partial class EditDialog
+public partial class DeleteBlogDialog
 {
     [CascadingParameter]
     public MudDialogInstance MudDialog { get; set; }
@@ -12,35 +12,21 @@ public partial class EditDialog
     [Parameter]
     public BlogModel Blog { get; set; }
 
-    private DialogOptions options = new()
+    private bool isDeleting = false;
+    private async Task DeleteAsync()
     {
-        CloseOnEscapeKey = true,
-        CloseButton = true,
-        MaxWidth = MaxWidth.Medium,
-    };
-
-    private CreateBlogModel model = new();
-    private bool isCreating = false;
-
-    protected override void OnInitialized()
-    {
-        model.Body = Blog.Body;
-    }
-
-    private async Task OnSubmitAsync()
-    {
-        if (isCreating)
+        if (isDeleting)
         {
             return;
         }
 
         try
         {
-            isCreating = true;
-            Blog.Body = model.Body;
-            await BlogData.UpdateBlogAsync(Blog);
+            isDeleting = true;
+            await BlogData.DeleteBlogAsync(Blog);
+
             Submit();
-            Navigation.NavigateTo($"/Blog/{Blog.Id}", true);
+            Navigation.NavigateTo("/");
         }
         catch (Exception)
         {
@@ -49,7 +35,7 @@ public partial class EditDialog
         }
         finally
         {
-            isCreating = false;
+            isDeleting = false;
         }
     }
 

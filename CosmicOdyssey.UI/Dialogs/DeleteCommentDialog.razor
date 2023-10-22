@@ -1,0 +1,95 @@
+﻿@inject ICommentData CommentData
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<MudDialog Class="bg-black text-white w-[500px]">
+    <TitleContent>
+        <div class="flex justify-between">
+            <span class="text-[20px]">
+                Delete
+                '
+                <span class="text-rose-500 overflow-hidden">@Comment?.Body</span>
+                '
+                ?
+            </span>
+            <button @onclick="Cancel" class="btn btn-close btn-close-white" />
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <div class="w-full">
+            <p class="text-zinc-400/80">
+                Are you sure you want to delete your comment?
+                This action is irreversible.
+            </p>
+        </div>
+        <div class="flex justify-content-between">
+            <div class="mt-4 flex flex-row justify-center">
+                <div class="rmt-6 px-4 py-2 rounded-full bg-sky-500
+                                hover:bg-opacity-90 cursor-pointer transition">
+                    <button class="text-center text-white text-[18px]"
+                            disabled="@isDeleting"
+                    @onclick="Cancel">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-row justify-center">
+                <div class="rmt-6 px-4 py-2 rounded-full bg-rose-500
+                                hover:bg-opacity-90 cursor-pointer transition">
+                    <button class="text-center text-white text-[18px]"
+                            disabled="@isDeleting"
+                    @onclick="DeleteAsync">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public CommentModel Comment { get; set; }
+
+    private bool isDeleting = false;
+
+    private async Task DeleteAsync()
+    {
+        if (isDeleting)
+        {
+            return;
+        }
+
+        try
+        {
+            isDeleting = true;
+
+            await CommentData.DeleteCommentAsync(Comment);
+
+            Submit();
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Something went wrong.", Severity.Error);
+            Cancel();
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
+
+    private void Submit()
+    {
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+}

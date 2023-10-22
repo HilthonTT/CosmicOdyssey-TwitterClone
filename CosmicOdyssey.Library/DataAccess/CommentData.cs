@@ -42,7 +42,7 @@ public class CommentData : ICommentData
 
             output = await _sql.LoadDataAsync<CommentModel>(storedProcedure, parameters,
                 "Id", new ProfileModel());
-            
+
             await _cache.SetRecordAsync(key, output, TimeSpan.FromHours(1));
         }
 
@@ -103,6 +103,12 @@ public class CommentData : ICommentData
         }
     }
 
+    private async Task RemoveCacheAsync(CommentModel comment)
+    {
+        string key = $"{CacheName}_{comment.BlogId}";
+        await _cache.RemoveRecordAsync(key);
+    }
+
     public async Task UpdateCommentAsync(CommentModel comment)
     {
         string storedProcedure = _sqlHelper.GetStoredProcedure<CommentModel>(Procedure.UPDATE);
@@ -111,6 +117,7 @@ public class CommentData : ICommentData
         parameters.Add("Body", comment.Body);
 
         await _sql.SaveDataAsync(storedProcedure, parameters);
+        await RemoveCacheAsync(comment);
     }
 
     public async Task DeleteCommentAsync(CommentModel comment)
@@ -120,5 +127,6 @@ public class CommentData : ICommentData
         parameters.Add("Id", comment.Id);
 
         await _sql.SaveDataAsync(storedProcedure, parameters);
+        await RemoveCacheAsync(comment);
     }
 }

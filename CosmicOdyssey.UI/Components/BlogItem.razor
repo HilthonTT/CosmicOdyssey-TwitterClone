@@ -8,7 +8,7 @@
     <div class="flex flex-row items-start gap-3">
         <Avatar Profile="@Blog.Profile" />
         <div class="w-full">
-            <div class="flex flex-row items-center gap-2 flex-col">
+            <div class="flex flex-row items-center gap-2">
                 <p @onclick="LoadProfilePage" @onclick:stopPropagation
                    class="text-white font-semibold cursor-pointer hover:underline">
                     @Blog.Profile?.FirstName @Blog.Profile?.LastName
@@ -20,10 +20,13 @@
                 <span class="text-neutral-500 text-sm">
                     @Blog?.DateCreated.Humanize()
                 </span>
-               @if (ShowEdit)
+                @if (ShowButtons)
                 {
                     <button @onclick="OpenEditDialogAsync" @onclick:stopPropagation class="ml-auto">
                         <MudIcon Icon="@Icons.Material.Filled.Edit" Class="text-sky-500 hover:text-sky-600" />
+                    </button>
+                    <button @onclick="OpenDeleteDialogAsync" @onclick:stopPropagation>
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Class="text-rose-500 hover:text-rose-800" />
                     </button>
                 }
             </div>
@@ -33,7 +36,7 @@
             <div class="flex flex-row items-center mt-3 gap-10">
                 <div @onclick:stopPropagation
                      class="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">
-                    <MudIcon Icon="@Icons.Material.Outlined.Message" Size="Size.Small" Title="Comments"/>
+                    <MudIcon Icon="@Icons.Material.Outlined.Message" Size="Size.Small" Title="Comments" />
                     <p>
                         @((comments is not null ? comments.Count : "0"))
                     </p>
@@ -43,7 +46,7 @@
                     <MudIcon Icon="@Icons.Material.Outlined.Favorite"
                              Size="Size.Small"
                              Color="@((isLiked) ? Color.Error : Color.Surface)"
-                             Title="Like"/>
+                             Title="Like" />
                     <p>
                         @likeCount
                     </p>
@@ -52,5 +55,4 @@
         </div>
     </div>
 </div>
-
 

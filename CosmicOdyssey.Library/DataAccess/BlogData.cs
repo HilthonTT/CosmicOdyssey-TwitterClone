@@ -92,12 +92,16 @@ public class BlogData : IBlogData
         await _sql.SaveDataAsync(storedProcedure, parameters);
     }
 
-    public async Task DeleteBlogAsync(int id)
+    public async Task DeleteBlogAsync(BlogModel blog)
     {
         string storedProcedure = _sqlHelper.GetStoredProcedure<BlogModel>(Procedure.DELETE);
         var parameters = new DynamicParameters();
-        parameters.Add("Id", id);
+        parameters.Add("Id", blog.Id);
 
         await _sql.SaveDataAsync(storedProcedure, parameters);
+
+        string key = $"{CacheName}_{blog.Profile.Id}";
+        await _cache.RemoveRecordAsync(key);
+        await _cache.RemoveRecordAsync(CacheName);
     }
 }
