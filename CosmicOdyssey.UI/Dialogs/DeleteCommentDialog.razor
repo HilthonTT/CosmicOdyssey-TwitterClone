@@ -47,49 +47,4 @@
     </DialogContent>
 </MudDialog>
 
-@code {
-    [CascadingParameter]
-    public MudDialogInstance MudDialog { get; set; }
 
-    [Parameter]
-    public CommentModel Comment { get; set; }
-
-    private bool isDeleting = false;
-
-    private async Task DeleteAsync()
-    {
-        if (isDeleting)
-        {
-            return;
-        }
-
-        try
-        {
-            isDeleting = true;
-
-            await CommentData.DeleteCommentAsync(Comment);
-
-            Submit();
-            Navigation.NavigateTo("/");
-        }
-        catch (Exception)
-        {
-            Snackbar.Add("Something went wrong.", Severity.Error);
-            Cancel();
-        }
-        finally
-        {
-            isDeleting = false;
-        }
-    }
-
-    private void Submit()
-    {
-        MudDialog?.Close(DialogResult.Ok(true));
-    }
-
-    private void Cancel()
-    {
-        MudDialog?.Cancel();
-    }
-}
